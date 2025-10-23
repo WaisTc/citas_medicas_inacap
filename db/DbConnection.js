@@ -74,6 +74,7 @@ async function datosCorreo(c) {
 
 
 async function cita_temporal(datos) {
+
   const sql = 'INSERT INTO cita_temporal(estado_cita, rut_paciente, rut_medico) VALUES (?, ?, ?)';
   const valores = ['EN PROCESO', datos.rut, datos.doctor];
 

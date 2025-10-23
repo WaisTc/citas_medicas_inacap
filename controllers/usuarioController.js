@@ -76,10 +76,15 @@ const loginUser = async (req, res) => {
 const obtenerMedicos = async (req, res) => {
   try {
     const rows = await medicos();
+    /*
     const nombres = rows.map(row => row.nombres);
     const rut_medico = rows.map(row => row.rut_empleado);
     
+    
     res.json({ medicos: nombres, rut_m: rut_medico });
+    */
+    res.json({ medic: rows });
+
   } catch (error) {
     console.error('Error al obtener médicos:', error);
     res.status(500).json({ error: 'Error interno del servidor' });

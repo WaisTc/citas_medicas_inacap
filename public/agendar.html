@@ -92,11 +92,11 @@
             <input class="form-control" type="text" id="plan_salud_tipo" name="plan_salud_tipo">
         </div>
 
-        <div class="form-group" style="margin-bottom:10px ;">
-            <label for="doctor_select">Doctor:</label>
-            <select id="doctor_select" name="doctor" class="form-control">
-                <option value="">Selecciona →</option>
-            </select>
+        <div class="form-group" style="margin-bottom: 10px;">
+          <label for="doctor_select">Doctor</label>
+          <select id="doctor_select" name="doctor" class="form-control">
+            <option value="">Selecciona</option>
+          </select>
         </div>
 
 
@@ -161,12 +161,15 @@
         })
         .then(data => {
         const select = document.getElementById('doctor_select');
-        data.medicos.forEach(nombre => {
-            const option = document.createElement('option');
-            option.value = data.rut_m;
-            option.textContent = nombre;
-            select.appendChild(option);
+
+        
+        data.medic.forEach(({ rut_empleado, nombres }) => {
+          const option = document.createElement('option');
+          option.value = rut_empleado;
+          option.textContent = nombres;
+          select.appendChild(option);
         });
+
         })
         .catch(error => {
         console.error('Error al cargar doctores:', error);
