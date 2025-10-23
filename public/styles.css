@@ -1,0 +1,47 @@
+body {
+  background-color: #f4f6f8;
+}
+
+.card-title {
+  color: #0d6efd;
+}
+
+footer h5 {
+  font-weight: bold;
+}
+
+
+
+/******************************* hechas a mano 100% tu mamá y sin IA *******************************/
+.user-button {
+  background: radial-gradient(circle, #0d6efd, rgb(47, 6, 172));
+  color: white;
+  border-radius: 100%;
+  width: 45px;
+  height: 45px;
+
+  margin-left: 20px;
+}
+
+.user-button:hover {
+  transition: 0.1s;
+}
+
+.user-button_invisible {
+  opacity: 0;
+}
+
+.form_visible {
+  opacity: 0;
+  z-index: -2;
+}
+
+.form_style {
+  color: black;
+}
+
+.pantalla {
+  width: 100vh;
+  height: 100vh;
+  z-index: -1;
+}

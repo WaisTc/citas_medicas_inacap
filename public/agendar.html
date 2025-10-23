@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sistema de Agendamiento</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://kit.fontawesome.com/0b464b9606.js" crossorigin="anonymous"></script>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-primary" style="min-width: 100%;">
+    <div class="container">
+      <a class="navbar-brand" href="#">PelaoKlein</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navMenu">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item"><a class="nav-link" href="index.html">Inicio</a></li>
+          <li class="nav-item"><a class="nav-link" href="agendar.html">Agendar</a></li>
+          <li class="nav-item"><a class="nav-link" href="#">Contacto</a></li>
+        </ul>
+      </div>
+      <button class="user-button" id="user-button-ql" onclick="botonQ()">
+        <i class="fa-solid fa-user"></i>
+      </button>
+
+      <button class="user-button" style="background: green;" id="perfil">
+        <i class="fa-solid fa-user"></i>
+      </button>
+
+    </div>
+  </nav>
+
+  <!-- agendar cita  -->
+
+  <div class="mt-5">
+    <h2 class="mb-4">Datos del paciente</h2>
+    <form action="" id="paciente-form" method="post" style="margin-left: 20px; margin-right: 20px;">
+        
+        <div class="mb-3">
+            <label class="form-label"for="rut">RUT:</label>
+            <input class="form-control" type="text" id="rut" name="rut" required>
+        </div>
+
+        <div class="mb-3"> 
+            <label class="form-label"class="form-label"for="nombres">Nombres:</label>
+            <input class="form-control" type="text" id="nombres" name="nombres" required>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label"for="primer_apellido">Primer Apellido:</label>
+            <input class="form-control" type="text" id="primer_apellido" name="primer_apellido" required>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label"for="segundo_apellido">Segundo Apellido:</label>
+            <input class="form-control" type="text" id="segundo_apellido" name="segundo_apellido">
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label"for="correo">Correo:</label>
+            <input class="form-control" type="email" id="correo" name="correo">
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label"for="telefono">Teléfono:</label>
+            <input class="form-control" type="text" id="telefono" name="telefono">
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label"for="direccion">Dirección:</label>
+            <input class="form-control" type="text" id="direccion" name="direccion">
+        </div>
+        
+        <div class="mb-3">
+            <label class="form-label"for="fecha_nacimiento">Fecha de Nacimiento:</label>
+            <input class="form-control" type="date" id="fecha_nacimiento" name="fecha_nacimiento">
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label"for="plan_salud_nombre">Plan de Salud:</label>
+            <input class="form-control" type="text" id="plan_salud_nombre" name="plan_salud_nombre">
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label"for="plan_salud_tipo">Tipo de Plan:</label>
+            <input class="form-control" type="text" id="plan_salud_tipo" name="plan_salud_tipo">
+        </div>
+
+        <div class="form-group" style="margin-bottom:10px ;">
+            <label for="doctor_select">Doctor:</label>
+            <select id="doctor_select" name="doctor" class="form-control">
+                <option value="">Selecciona →</option>
+            </select>
+        </div>
+
+
+        <button class="btn btn-primary" type="submit">Confirmar</button>
+
+    </form>
+  </div>
+
+
+  <div class="pantalla"></div>
+
+
+  <!-- Footer -->
+  <footer class="bg-dark text-white pt-4 pb-2 mt-5" style="width: 100%; bottom: 0px;">
+    <div class="container text-center text-md-start" >
+      <div class="row">
+        <div class="col-md-6 mb-3" >
+          <h5>AgendApp</h5>
+          <p>Proyecto universitario desarrollado por Allan y Javier.</p>
+        </div>
+        <div class="col-md-6 text-md-end">
+          <a href="#" class="text-white me-3"><i class="bi bi-facebook"></i></a>
+          <a href="#" class="text-white me-3"><i class="bi bi-instagram"></i></a>
+          <a href="#" class="text-white"><i class="bi bi-envelope-fill"></i></a>
+        </div>
+      </div>
+      <hr class="bg-light">
+      <div class="text-center">
+        <p class="mb-0">&copy; 2025 Todos los derechos reservados</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="agendar.js"></script>
+  <script>
+    const token = sessionStorage.getItem('token');
+
+    if (token) {
+      // Desabilitar boton inicio de sesion
+      document.getElementById('user-button-ql').style.display = 'none';
+      // Cerrar sesion
+      document.getElementById('perfil').addEventListener('click', () => {
+        sessionStorage.removeItem('token'); // Elimina el token
+        sessionStorage.removeItem('correo_user'); // Elimina el token
+        sessionStorage.removeItem('rol');
+        alert("Cerrando sesion")
+        window.location.href = 'index.html'; // Redirige al index
+      });
+    }
+    else{
+      alert("Debe iniciar sesion primero")
+      window.location.href = 'index.html'; // Redirige al index
+    }
+  </script>
+
+    <script>
+    fetch('http://localhost:3000/api/usuario/medicos')
+        .then(response => {
+        if (!response.ok) throw new Error('Error en la respuesta del servidor');
+        return response.json();
+        })
+        .then(data => {
+        const select = document.getElementById('doctor_select');
+        data.medicos.forEach(nombre => {
+            const option = document.createElement('option');
+            option.value = data.rut_m;
+            option.textContent = nombre;
+            select.appendChild(option);
+        });
+        })
+        .catch(error => {
+        console.error('Error al cargar doctores:', error);
+        });
+    </script>
+
+    
+
+    <script>
+        const c = sessionStorage.getItem("correo_user");
+        if (c) {
+            fetch(`http://localhost:3000/api/usuario/paciente_datos/${c}`)
+                .then(res => {
+                    if (!res.ok) throw new Error("No se pudo obtener los datos");
+                    return res.json();
+                })
+                .then(data => {
+                    document.getElementById("rut").value = data.rut_paciente || "";
+                    document.getElementById("nombres").value = data.nombres || "";
+                    document.getElementById("segundo_apellido").value = data.segundo_apellido || "";
+                    document.getElementById("primer_apellido").value = data.primer_apellido || "";
+                    document.getElementById("correo").value = data.correo || "";
+                    document.getElementById("telefono").value = data.telefono || "";
+                    document.getElementById("direccion").value = data.direccion || "";
+                    
+                    const fechaCruda = data.fecha_nacimiento;
+                    const fechaFormateada = fechaCruda.split('T')[0];
+                    document.getElementById("fecha_nacimiento").value = fechaFormateada;
+
+
+                    document.getElementById("plan_salud_nombre").value = data.plan_salud_nombre || "";
+                    document.getElementById("plan_salud_tipo").value = data.plan_salud_tipo || "";
+                })
+                .catch(err => console.error("Error al cargar datos del usuario:", err));
+        }
+    </script>
+
+
+
+  </body>
+</html>

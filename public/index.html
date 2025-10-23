@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sistema de Agendamiento</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://kit.fontawesome.com/0b464b9606.js" crossorigin="anonymous"></script>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-primary" style="min-width: 100%;">
+    <div class="container">
+      <a class="navbar-brand" href="#">PelaoKlein</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navMenu">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item"><a class="nav-link" href="index.html">Inicio</a></li>
+          <li class="nav-item" id="agendar"><a class="nav-link" href="agendar.html">Agendar</a></li>
+          <li class="nav-item" id="horario"><a class="nav-link" href="horario.html">horario</a></li>
+          <li class="nav-item"><a class="nav-link" href="#">Contacto</a></li>
+        </ul>
+      </div>
+      <button class="user-button" id="user-button-ql" onclick="botonQ()">
+        <i class="fa-solid fa-user"></i>
+      </button>
+
+      <button class="user-button" style="background: green;" id="perfil">
+        <i class="fa-solid fa-user"></i>
+      </button>
+
+    </div>
+  </nav>
+
+
+  <!-- Informacion de interes de la pagina  -->
+  <div style="margin-top: 100px;">
+    Lorem ipsum dolor sit amet consectetur, adipisicing elit. Optio excepturi beatae corrupti delectus iure. Aperiam, quibusdam tempore! Iure inventore placeat reprehenderit totam libero sunt, necessitatibus excepturi expedita rerum nihil reiciendis nobis commodi quaerat odio exercitationem! Dolor fugit neque libero deserunt velit reprehenderit unde sequi quibusdam laudantium possimus temporibus numquam quia facilis sint cum eos, provident quas, corrupti, repellat doloribus voluptates exercitationem? Neque architecto omnis vero quidem facilis cum tenetur, explicabo temporibus sint, ex adipisci praesentium! Explicabo, numquam at. Nobis quisquam rem ex in vero possimus modi architecto enim consequuntur dicta aliquid repellendus sapiente tempore, omnis nemo harum officiis ea nesciunt!
+  </div>
+  
+
+  <div class="pantalla"></div>
+
+
+  <!-- Login Modal/Formulario -->
+  <div class="modal fade show d-block form_style form_visible" tabindex="-1" style="background:rgba(0,0,0,0.3);">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content rounded shadow">
+        <div class="modal-header border-0 pb-0">
+          <h5 class="modal-title fw-bold">Iniciar Sesión</h5>
+        </div>
+        <div class="modal-body pt-0">
+          <form id="Login">
+            <div class="mb-3">
+              <label class="form-label" for="login_user">Usuario</label>
+              <input type="text" class="form-control" id="login_user" placeholder="email">
+            </div>
+            <div class="mb-3">
+              <label class="form-label" for="login_password">Contraseña</label>
+              <input type="password" class="form-control" id="login_password" placeholder="contraseña">
+            </div>
+            <button type="submit" class="btn btn-primary w-100 mb-3">Entrar</button>
+          </form>
+          <div class="text-center mb-2">
+            <small>¿No tienes una cuenta? <a href="register.html">Regístrate aquí</a></small><br>
+            <small><a href="#">¿Olvidaste tu contraseña?</a></small>
+          </div>
+          <div class="d-grid gap-2 mb-2">
+            <button class="btn btn-danger" type="button">
+              <i class="bi bi-google"></i> Entrar con Google
+            </button>
+            <button class="btn btn-primary" style="background-color:#5865F2; border:none;" type="button">
+              <i class="bi bi-discord"></i> Entrar con Discord
+            </button>
+          </div>
+          <div class="text-center mt-2">
+            <button class="btn btn-link text-secondary" data-bs-dismiss="modal" onclick="botonQ()">Cerrar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- Footer -->
+  <footer class="bg-dark text-white pt-4 pb-2 mt-5" style="width: 100%; bottom: 0px;">
+    <div class="container text-center text-md-start" >
+      <div class="row">
+        <div class="col-md-6 mb-3" >
+          <h5>AgendApp</h5>
+          <p>Proyecto universitario desarrollado por Allan y Javier.</p>
+        </div>
+        <div class="col-md-6 text-md-end">
+          <a href="#" class="text-white me-3"><i class="bi bi-facebook"></i></a>
+          <a href="#" class="text-white me-3"><i class="bi bi-instagram"></i></a>
+          <a href="#" class="text-white"><i class="bi bi-envelope-fill"></i></a>
+        </div>
+      </div>
+      <hr class="bg-light">
+      <div class="text-center">
+        <p class="mb-0">&copy; 2025 Todos los derechos reservados</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="script.js"></script>
+  <script>
+    const token = sessionStorage.getItem('token');
+    const rol_us = sessionStorage.getItem('rol');
+
+    if (token) {
+      // Desabilitar boton inicio de sesion
+      document.getElementById('user-button-ql').style.display = 'none';
+      // Cerrar sesion
+      document.getElementById('perfil').addEventListener('click', () => {
+        sessionStorage.removeItem('token'); // Elimina el token
+        sessionStorage.removeItem('correo_user'); // Elimina el token
+        sessionStorage.removeItem('rol');
+        alert("Cerrando sesion")
+        window.location.href = 'index.html'; // Redirige al index
+      });
+    }
+    else{
+      document.getElementById('perfil').style.display = 'none';
+    }
+  </script>
+
+  <script>
+    const rol = sessionStorage.getItem('rol')
+
+    if(rol == 2){
+      document.getElementById('agendar').style.display = 'none';
+    }
+    if(rol == 1 || rol == null){
+      document.getElementById('horario').style.display = 'none';
+    }
+
+  </script>
+
+  </body>
+</html>
