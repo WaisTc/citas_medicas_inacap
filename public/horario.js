@@ -158,7 +158,6 @@ async function grafico_p() {
   const res = await fetch(`http://localhost:3000/api/usuario/pelao/${c}`);
   const data = await res.json();
 
-  console.log("Datos recibidos:", data);
 
   // Definir los 12 meses en orden
   const meses = [

@@ -28,7 +28,10 @@ document.getElementById('paciente-form').addEventListener('submit', async functi
     return res.json();
   })
   .then(resultado => {
+    
     console.log('Respuesta del servidor:', resultado);
+    alert("Procesado correctamente");
+    window.location.href = 'index.html';
   })
   .catch(error => {
     console.error('Error en el fetch:', error.message);
