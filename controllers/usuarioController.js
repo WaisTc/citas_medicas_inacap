@@ -1,7 +1,7 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
-const { insertarUsuario, validar, medicos, datosCorreo, cita_temporal, card_t, consulta_card, ingresar_cita, citas_aceptadas } = require('../db/DbConnection');
+const { insertarUsuario, validar, medicos, datosCorreo, cita_temporal, card_t, consulta_card, ingresar_cita, citas_aceptadas, dashboard_count } = require('../db/DbConnection');
 const conexion = require('../db/DbConnection'); // conexión a la base de datos
 
 const crearUsuario = async (req, res) => {
@@ -181,4 +181,21 @@ const aceptar_solicitud = async (req, res) => {
 
 
 
-module.exports = { crearUsuario, loginUser, obtenerMedicos, obtenerDatosPorCorreo, cita_t_empleado, cita_t_solicitud, aceptar_solicitud, cita_aceptadas_empleado} ;
+const pelao = async (req, res) => {
+
+  const c = req.params.correo_user;
+
+  try {
+    const resultado = await dashboard_count(c);
+    return res.json(resultado); // Envia data al frontend
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ error: "Error en el servidor" });
+  }
+}
+
+
+
+module.exports = { crearUsuario, loginUser, obtenerMedicos, 
+  obtenerDatosPorCorreo, cita_t_empleado, cita_t_solicitud, aceptar_solicitud, 
+  cita_aceptadas_empleado, pelao} ;

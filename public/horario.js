@@ -114,13 +114,6 @@ async function aceptarCita(boton) {
 }
 
 
-
-
-
-
-
-
-
 window.addEventListener('DOMContentLoaded', () => {
   const correo = sessionStorage.getItem('correo_user');
 
@@ -142,6 +135,7 @@ window.addEventListener('DOMContentLoaded', () => {
     } else {
       contenedor_aceptado.innerHTML = '<p>No hay citas asignadas.</p>';
     }
+    grafico_p();
   })
   .catch(error => {
     console.error('Error al obtener citas:', error);
@@ -149,3 +143,100 @@ window.addEventListener('DOMContentLoaded', () => {
 
 
 });
+
+
+
+
+
+
+
+
+async function grafico_p() {
+  const c = sessionStorage.getItem("correo_user");
+
+  // Llamar a tu API
+  const res = await fetch(`http://localhost:3000/api/usuario/pelao/${c}`);
+  const data = await res.json();
+
+  console.log("Datos recibidos:", data);
+
+  // Definir los 12 meses en orden
+  const meses = [
+    "enero", "febrero", "marzo", "abril", "mayo", "junio",
+    "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"
+  ];
+
+  // Crear arreglo de valores (0 si no hay citas en ese mes)
+  const valores = meses.map(m => data[m] || 0);
+
+  // Si ya hay un gráfico previo, destruirlo antes de crear otro
+  if (window.miGrafico) {
+    window.miGrafico.destroy();
+  }
+
+  // Crear gráfico de barras
+  const ctx = document.getElementById("graficoCitas").getContext("2d");
+  window.miGrafico = new Chart(ctx, {
+    type: "bar",
+    data: {
+      labels: meses,
+      datasets: [{
+        label: "Cantidad de citas por mes",
+        data: valores,
+        backgroundColor: [
+          "rgba(54, 162, 235, 0.6)",
+          "rgba(255, 99, 132, 0.6)",
+          "rgba(255, 206, 86, 0.6)",
+          "rgba(75, 192, 192, 0.6)",
+          "rgba(153, 102, 255, 0.6)",
+          "rgba(255, 159, 64, 0.6)",
+          "rgba(199, 199, 199, 0.6)",
+          "rgba(54, 162, 235, 0.6)",
+          "rgba(255, 99, 132, 0.6)",
+          "rgba(255, 206, 86, 0.6)",
+          "rgba(75, 192, 192, 0.6)",
+          "rgba(153, 102, 255, 0.6)"
+        ],
+        borderColor: "rgba(0, 0, 0, 0.2)",
+        borderWidth: 1,
+        borderRadius: 6
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: {
+          display: true,
+          labels: { color: "#333", font: { size: 14, weight: "bold" } }
+        },
+        title: {
+          display: true,
+          text: "Citas Médicas por Mes",
+          color: "#222",
+          font: { size: 18, weight: "bold" }
+        }
+      },
+      scales: {
+        x: {
+          ticks: {
+            color: "#333",
+            font: { size: 12 }
+          },
+          grid: {
+            display: false
+          }
+        },
+        y: {
+          beginAtZero: true,
+          ticks: {
+            color: "#333",
+            font: { size: 12 }
+          },
+          grid: {
+            color: "rgba(200, 200, 200, 0.2)"
+          }
+        }
+      }
+    }
+  });
+};

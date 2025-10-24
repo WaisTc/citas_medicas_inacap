@@ -35,3 +35,4 @@ document.getElementById('paciente-form').addEventListener('submit', async functi
   });
 
 });
+

@@ -8,6 +8,7 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
   <script src="https://kit.fontawesome.com/0b464b9606.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
 
@@ -37,15 +38,25 @@
 
   
     <div class="container mt-4">
+      
       <h3>Solicitudes de citas medicas</h3>
       <div id="contenedor-citas-temporal" class="row row-cols-1 row-cols-md-3 g-6"></div>
+      
       <hr>
       <h3>Citas medicas aceptadas</h3>
       <div id="contenedor-citas-aceptadas" class="row row-cols-1 row-cols-md-3 g-6"></div>
+      
+      <hr>
+      <div id="grafico">
+        <canvas id="graficoCitas"></canvas>
+      </div>
     </div>
 
 
   </div>
+
+
+  
 
 
 

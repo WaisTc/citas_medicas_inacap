@@ -157,4 +157,39 @@ async function citas_aceptadas(correo) {
 
 
 
-module.exports = { insertarUsuario, validar, medicos, datosCorreo, cita_temporal, card_t, consulta_card, ingresar_cita, citas_aceptadas};
+
+
+async function dashboard_count(correo_d) {
+  const [sql_empleado] = await conexion.execute(
+    'SELECT rut_empleado FROM empleado WHERE correo = ?',
+    [correo_d]
+  );
+
+  if (!sql_empleado || sql_empleado.length === 0) return null;
+
+  const rut_doc = sql_empleado[0].rut_empleado;
+
+  const [sql_fecha] = await conexion.execute(
+    'SELECT fecha_hora FROM cita WHERE rut_medico = ?',
+    [rut_doc]
+  );
+
+  const citasPorMes = {};
+
+  sql_fecha.forEach((registro) => {
+    const fecha = new Date(registro.fecha_hora);
+    const mes = fecha.toLocaleString('es-CL', { month: 'long' });
+
+    if (!citasPorMes[mes]) {
+      citasPorMes[mes] = 0;
+    }
+
+    citasPorMes[mes]++;
+  });
+
+  return citasPorMes; // retornamos el objeto, no console.log
+}
+
+
+
+module.exports = { insertarUsuario, validar, medicos, datosCorreo, cita_temporal, card_t, consulta_card, ingresar_cita, citas_aceptadas, dashboard_count};
