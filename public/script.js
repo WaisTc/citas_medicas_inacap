@@ -1,5 +1,5 @@
 function agendar(servicio, fecha, hora) {
-  const mensaje = `✅ Cita para <strong>${servicio}</strong> agendada el <strong>${fecha}</strong> a las <strong>${hora}</strong>.`;
+  const mensaje = `Cita para <strong>${servicio}</strong> agendada el <strong>${fecha}</strong> a las <strong>${hora}</strong>.`;
   const confirmacion = document.getElementById('confirmacion');
   confirmacion.innerHTML = mensaje;
   confirmacion.classList.remove('d-none');

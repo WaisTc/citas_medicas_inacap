@@ -1,7 +1,8 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
-const { insertarUsuario, validar, medicos, datosCorreo, cita_temporal, card_t, consulta_card, ingresar_cita, citas_aceptadas, dashboard_count } = require('../db/DbConnection');
+
+const { insertarUsuario, validar, medicos, datosCorreo, cita_temporal, card_t, consulta_card, ingresar_cita, notificarAceptacion,citas_aceptadas, dashboard_count, Correo_p } = require('../db/DbConnection');
 const conexion = require('../db/DbConnection'); // conexión a la base de datos
 
 const crearUsuario = async (req, res) => {
@@ -161,6 +162,8 @@ const cita_aceptadas_empleado = async (req, res) => {
 const aceptar_solicitud = async (req, res) => {
   const data = req.body
 
+  const correo_paciente= await Correo_p(data.rut);
+
   const consulta = await consulta_card(data.id_cita)
 
   if (consulta.length === 0) {
@@ -170,6 +173,9 @@ const aceptar_solicitud = async (req, res) => {
   const resultado = consulta[0]
 
   try{
+
+
+    await notificarAceptacion(data, correo_paciente.correo)
     await ingresar_cita(data, resultado)
     return res.status(200).json({message: 'Cita ingresada correctamente'})
   }

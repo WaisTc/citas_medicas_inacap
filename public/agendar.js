@@ -39,3 +39,4 @@ document.getElementById('paciente-form').addEventListener('submit', async functi
 
 });
 
+// RECORDAR HACER EL FORMULARIO MAS ESTETICO

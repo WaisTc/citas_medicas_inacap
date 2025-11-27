@@ -1,7 +1,10 @@
 
 const mysql = require('mysql2/promise');
 const { resolve } = require('path');
+const nodemailer = require("nodemailer");
+
 require('dotenv').config();
+
 
 const conexion = mysql.createPool({
   host: process.env.DB_HOST,
@@ -9,6 +12,31 @@ const conexion = mysql.createPool({
   password: process.env.DB_PASS,
   database: process.env.DB_NAME
 });
+
+const transporter = nodemailer.createTransport({
+  service: "gmail",
+  auth: {
+    user: process.env.GMAIL_USER,
+    pass: process.env.GMAIL_PASS
+  }
+});
+
+async function notificarAceptacion(cita, destinatario) {
+  const mailOptions = {
+    from: process.env.GMAIL_USER,
+    to: destinatario,
+    subject: "Cita aceptada",
+    text: `Hola, tu cita para el día ${cita.fecha} a las ${cita.hora} ha sido aceptada.`
+  };
+
+  try {
+    await transporter.sendMail(mailOptions);
+    console.log("Correo enviado correctamente");
+  } catch (error) {
+    console.error("Error al enviar correo:", error);
+  }
+}
+
 
 
 async function insertarUsuario(datos) {
@@ -54,6 +82,15 @@ async function validar(credenciales) {
 
 
 }
+
+
+async function Correo_p(r) {
+  const [c] = await conexion.query('SELECT correo FROM paciente WHERE rut_paciente = ?',[r]);
+  const correo = c[0]
+  return correo
+}
+
+
 
 async function medicos() {
   const [rows] = await conexion.query(
@@ -192,4 +229,8 @@ async function dashboard_count(correo_d) {
 
 
 
-module.exports = { insertarUsuario, validar, medicos, datosCorreo, cita_temporal, card_t, consulta_card, ingresar_cita, citas_aceptadas, dashboard_count};
+module.exports = { insertarUsuario, 
+  validar, medicos, datosCorreo, cita_temporal, 
+  card_t, consulta_card, ingresar_cita, 
+  citas_aceptadas, dashboard_count, notificarAceptacion, Correo_p};
+
