@@ -11,7 +11,10 @@ footer h5 {
 }
 
 
-
+#map {
+  height: 300px;
+  width: 100%;
+}
 
 #asideCarousel {
   position: absolute;   
@@ -29,6 +32,13 @@ footer h5 {
   object-fit: cover;   
 }
 
+.map-div {
+  position: absolute;
+  width: 56%;
+  left: 100px;
+  margin-bottom: 300px;
+  bottom: -350px;
+}
 
 
 /******************************* hechas a mano 100% tu mamá y sin IA *******************************/

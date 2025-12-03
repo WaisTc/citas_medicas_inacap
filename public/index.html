@@ -67,6 +67,7 @@
     </button>
   </div>
 
+
   <!-- Aside con carousel -->
   <aside id="asideCarousel">
     <div id="medicosCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="8000">
@@ -76,8 +77,8 @@
             data-nombre="Dr. Pérez"
             data-especialidad="Cardiología"
             data-descripcion="Más de 15 años de experiencia en diagnóstico y tratamiento de enfermedades cardiovasculares."
-            data-lugar="Clínica Jardín del Alma">
-          <img src="imagenes/imagen1.jpg" class="d-block w-100" alt="Médico 1">
+            data-lugar="Hospital Nuevo de Curicó">
+          <img src="imagenes/imagen3.jpg" class="d-block w-100" alt="Médico 1">
         </div>
 
         <!-- Item 2 -->
@@ -85,17 +86,18 @@
             data-nombre="Dra. González"
             data-especialidad="Pediatría"
             data-descripcion="Atiende niños y adolescentes, enfocada en prevención y desarrollo saludable."
-            data-lugar="Hospital Regional del Maule">
+            data-lugar="Hospital Nuevo de Curicó">
           <img src="imagenes/imagen2.jpg" class="d-block w-100" alt="Médico 2">
         </div>
 
         <!-- Item 3 -->
         <div class="carousel-item"
-            data-nombre="Dr. Ramírez"
-            data-especialidad="Neurología"
-            data-descripcion="Especialista en trastornos neurológicos, investigación clínica y atención integral."
-            data-lugar="Centro Médico Molina">
-          <img src="imagenes/imagen3.jpg" class="d-block w-100" alt="Médico 3">
+            data-nombre="Dr. Gregory House"
+            data-especialidad="Nefrología e infectología, con un enfoque en el diagnóstico diferencial de casos complejos y poco comunes."
+            data-descripcion=" Director del Departamento de Diagnóstico. Capacidad excepcional para identificar enfermedades raras y resolver enigmas médicos que otros especialistas no logran descifrar.
+"
+            data-lugar="Hospital Nuevo de Curicó">
+          <img src="imagenes/imagen1.jpg" class="d-block w-100" alt="Médico 3">
         </div>
       </div>
 
@@ -110,7 +112,13 @@
   </aside>
 
 
-  <div class="pantalla"></div>
+  <div class="pantalla">
+    
+    <div class="map-div">
+      <div id="map"></div>
+    </div>
+
+  </div>
 
 
   <!-- Login Modal/Formulario -->
@@ -151,6 +159,12 @@
       </div>
     </div>
   </div>
+
+
+
+
+  
+
 
 
   <!-- Footer -->
@@ -266,6 +280,14 @@
 
 
   </script>
+
+  
+  <script async defer
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCBspqUPlXeRXK7_NcvWpF6iHQ7rN4IbXI&callback=initMap">
+  </script>
+
+  <script src="map.js"></script>
+
 
 
   </body>
