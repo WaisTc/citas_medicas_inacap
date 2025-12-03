@@ -2,6 +2,7 @@
 const mysql = require('mysql2/promise');
 const { resolve } = require('path');
 const nodemailer = require("nodemailer");
+const { citasDel_usuario } = require('../controllers/usuarioController');
 
 require('dotenv').config();
 
@@ -25,8 +26,38 @@ async function notificarAceptacion(cita, destinatario) {
   const mailOptions = {
     from: process.env.GMAIL_USER,
     to: destinatario,
-    subject: "Cita aceptada",
-    text: `Hola, tu cita para el día ${cita.fecha} a las ${cita.hora} ha sido aceptada.`
+    subject: "Confirmación de cita médica",
+    html: `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; border: 1px solid #ddd; border-radius: 8px; padding: 20px;">
+        <h2 style="color: #2c5036ff;">Cita confirmada</h2>
+        <p>Estimado/a paciente,</p>
+        <p>Tu cita ha sido <strong>aceptada</strong> con los siguientes detalles:</p>
+
+        <table style="width: 100%; border-collapse: collapse; margin-top: 10px;">
+          <tr>
+            <td style="padding: 8px; border-bottom: 1px solid #eee;"><strong>Fecha:</strong></td>
+            <td style="padding: 8px; border-bottom: 1px solid #eee;">${cita.fecha}</td>
+          </tr>
+          <tr>
+            <td style="padding: 8px; border-bottom: 1px solid #eee;"><strong>Hora:</strong></td>
+            <td style="padding: 8px; border-bottom: 1px solid #eee;">${cita.hora}</td>
+          </tr>
+          <tr>
+            <td style="padding: 8px; border-bottom: 1px solid #eee;"><strong>Lugar:</strong></td>
+            <td style="padding: 8px; border-bottom: 1px solid #eee;">${cita.lugar_atencion}</td>
+          </tr>
+          <tr>
+            <td style="padding: 8px;"><strong>Tipo de cita:</strong></td>
+            <td style="padding: 8px;">${cita.tipo_cita}</td>
+          </tr>
+        </table>
+
+        <p style="margin-top: 20px;">Por favor, asegúrate de llegar con al menos <strong>10 minutos de anticipación</strong>.</p>
+
+        <hr style="margin: 30px 0;">
+        <p style="font-size: 12px; color: #888;">Este mensaje fue generado automáticamente por el sistema.</p>
+      </div>
+    `
   };
 
   try {
@@ -36,6 +67,98 @@ async function notificarAceptacion(cita, destinatario) {
     console.error("Error al enviar correo:", error);
   }
 }
+
+async function notificarCancelacion(cita, destinatarios) {
+  let htmlContent = "";
+
+  if (cita.estado_cita === "EN PROCESO") {
+    // Mensaje simplificado para solicitudes en proceso
+    htmlContent = `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; 
+                  border: 1px solid #ddd; border-radius: 8px; padding: 20px;">
+        <h2 style="color: #e67e22;">Solicitud cancelada</h2>
+        <p>La solicitud fue cancelada con éxito.</p>
+
+        <table style="width: 100%; border-collapse: collapse; margin-top: 10px;">
+          <tr>
+            <td style="padding: 8px; border-bottom: 1px solid #eee;"><strong>RUT Paciente:</strong></td>
+            <td style="padding: 8px; border-bottom: 1px solid #eee;">${cita.rut_paciente}</td>
+          </tr>
+          <tr>
+            <td style="padding: 8px; border-bottom: 1px solid #eee;"><strong>RUT Médico:</strong></td>
+            <td style="padding: 8px; border-bottom: 1px solid #eee;">${cita.rut_medico}</td>
+          </tr>
+          <tr>
+            <td style="padding: 8px;"><strong>Tipo de cita:</strong></td>
+            <td style="padding: 8px;">General</td>
+          </tr>
+        </table>
+
+        <hr style="margin: 30px 0;">
+        <p style="font-size: 12px; color: #888;">Este mensaje fue generado automáticamente por el sistema.</p>
+      </div>
+    `;
+  } else {
+    // Mensaje completo para citas aceptadas
+    htmlContent = `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; 
+                  border: 1px solid #ddd; border-radius: 8px; padding: 20px;">
+        <h2 style="color: #e67e22;">La cita fue cancelada</h2>
+        <p>Se informa que la siguiente cita ha sido <strong>cancelada</strong>:</p>
+
+        <table style="width: 100%; border-collapse: collapse; margin-top: 10px;">
+          <tr>
+            <td style="padding: 8px; border-bottom: 1px solid #eee;"><strong>ID Cita:</strong></td>
+            <td style="padding: 8px; border-bottom: 1px solid #eee;">${cita.id_cita}</td>
+          </tr>
+          <tr>
+            <td style="padding: 8px; border-bottom: 1px solid #eee;"><strong>RUT Paciente:</strong></td>
+            <td style="padding: 8px; border-bottom: 1px solid #eee;">${cita.rut_paciente}</td>
+          </tr>
+          <tr>
+            <td style="padding: 8px; border-bottom: 1px solid #eee;"><strong>RUT Médico:</strong></td>
+            <td style="padding: 8px; border-bottom: 1px solid #eee;">${cita.rut_medico}</td>
+          </tr>
+          <tr>
+            <td style="padding: 8px; border-bottom: 1px solid #eee;"><strong>Fecha:</strong></td>
+            <td style="padding: 8px; border-bottom: 1px solid #eee;">${cita.fecha || "Sin definir"}</td>
+          </tr>
+          <tr>
+            <td style="padding: 8px; border-bottom: 1px solid #eee;"><strong>Hora:</strong></td>
+            <td style="padding: 8px; border-bottom: 1px solid #eee;">${cita.hora || "Sin definir"}</td>
+          </tr>
+          <tr>
+            <td style="padding: 8px; border-bottom: 1px solid #eee;"><strong>Lugar:</strong></td>
+            <td style="padding: 8px; border-bottom: 1px solid #eee;">${cita.lugar_atencion || "Sin definir"}</td>
+          </tr>
+          <tr>
+            <td style="padding: 8px;"><strong>Tipo de cita:</strong></td>
+            <td style="padding: 8px;">${cita.tipo_cita || "Sin definir"}</td>
+          </tr>
+        </table>
+
+        <hr style="margin: 30px 0;">
+        <p style="font-size: 12px; color: #888;">Este mensaje fue generado automáticamente por el sistema.</p>
+      </div>
+    `;
+  }
+
+  const mailOptions = {
+    from: process.env.GMAIL_USER,
+    to: destinatarios,
+    subject: "Notificación de cancelación de cita médica",
+    html: htmlContent
+  };
+
+  try {
+    await transporter.sendMail(mailOptions);
+    console.log("Correo de cancelación enviado correctamente");
+  } catch (error) {
+    console.error("Error al enviar correo de cancelación:", error);
+  }
+}
+
+
 
 
 
@@ -125,7 +248,6 @@ async function card_t(c_user) {
 
 
   try {
-    // 1. Obtener rut del empleado
     const [resultado_rut] = await conexion.execute(
       'SELECT rut_empleado FROM empleado WHERE correo = ?',
       [c_user]
@@ -138,13 +260,12 @@ async function card_t(c_user) {
 
     const rut = resultado_rut[0].rut_empleado;
 
-    // 2. Obtener citas temporales asociadas al rut
     const [citas] = await conexion.execute(
       'SELECT * FROM cita_temporal WHERE rut_medico = ?',
       [rut]
     );
 
-    return citas; // Devuelve directamente el array de citas
+    return citas; 
   } catch (error) {
     console.error('Error en card_t:', error);
     return null;
@@ -193,9 +314,6 @@ async function citas_aceptadas(correo) {
 }
 
 
-
-
-
 async function dashboard_count(correo_d) {
   const [sql_empleado] = await conexion.execute(
     'SELECT rut_empleado FROM empleado WHERE correo = ?',
@@ -224,7 +342,53 @@ async function dashboard_count(correo_d) {
     citasPorMes[mes]++;
   });
 
-  return citasPorMes; // retornamos el objeto, no console.log
+  return citasPorMes; 
+}
+
+
+
+async function Citasdel_usuario(c) {
+
+  const [rut_P] = await conexion.execute("SELECT rut_paciente FROM paciente WHERE correo = ?", [c.correo]);
+  const rut_limpio = rut_P[0].rut_paciente;
+  
+
+  const [resultado_temporal] = await conexion.execute("SELECT * FROM cita_temporal WHERE rut_paciente = ?", [rut_limpio]);
+  const [resultado_aceptadas] = await conexion.execute("SELECT * FROM cita WHERE rut_paciente = ?", [rut_limpio])
+
+  return {
+    temporales: resultado_temporal,
+    aceptadas: resultado_aceptadas
+  };
+
+}
+
+
+async function cancelar_cita_notificacion(datos) {
+
+  const [correo_medico] = await conexion.execute("SELECT correo FROM empleado WHERE rut_empleado = ?", [datos.rut_medico]);
+  const correo_medico_limpio = correo_medico[0].correo;
+
+  const [correo_paciente] = await conexion.execute("SELECT correo FROM paciente WHERE rut_paciente = ?", [datos.rut_paciente]);
+  const correo_paciente_limpio = correo_paciente[0].correo;
+
+  if(datos.estado_cita == "EN PROCESO"){
+    await conexion.execute("DELETE FROM cita_temporal WHERE id_cita = ?", [datos.id_cita]);
+    notificarCancelacion(datos, correo_paciente_limpio)
+    const resultado = true;
+    return resultado;
+  }
+  else if(datos.estado_cita == "Aceptada"){
+    await conexion.execute("DELETE FROM cita WHERE id_cita = ?", [datos.id_cita]);
+    notificarCancelacion(datos, correo_paciente_limpio)
+    //notificarCancelacion(datos, correo_medico_limpio)
+    const resultado = true;
+    return resultado;
+  }
+  else{
+    return false;
+  }
+
 }
 
 
@@ -232,5 +396,7 @@ async function dashboard_count(correo_d) {
 module.exports = { insertarUsuario, 
   validar, medicos, datosCorreo, cita_temporal, 
   card_t, consulta_card, ingresar_cita, 
-  citas_aceptadas, dashboard_count, notificarAceptacion, Correo_p};
+  citas_aceptadas, dashboard_count, notificarAceptacion, Correo_p, 
+  Citasdel_usuario, cancelar_cita_notificacion
+};
 

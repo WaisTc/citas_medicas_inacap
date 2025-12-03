@@ -14,17 +14,31 @@
   <!-- Navbar -->
   <nav class="navbar navbar-expand-lg navbar-dark bg-primary" style="min-width: 100%;">
     <div class="container">
-      <a class="navbar-brand" href="index.html">Shuby Agends</a>
+      <a class="navbar-brand" href="#">Shuby Agends</a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navMenu">
         <ul class="navbar-nav ms-auto">
           <li class="nav-item"><a class="nav-link" href="index.html">Inicio</a></li>
-          <li class="nav-item"><a class="nav-link" href="#">####</a></li>
+          <li class="nav-item" id="agendar"><a class="nav-link" href="agendar.html">Agendar</a></li>
+          <li class="nav-item" id="horario"><a class="nav-link" href="horario.html">Horario</a></li>
           <li class="nav-item"><a class="nav-link" href="#">Contacto</a></li>
+          <li class="nav-item" id="citasUser_"><a class="nav-link" href="citasUser.html">Mis Citas</a></li>
         </ul>
       </div>
+
+      <!-- Botones de usuario -->
+      <button class="user-button" id="user-button-ql" onclick="botonQ()">
+        <i class="fa-solid fa-user"></i>
+      </button>
+      
+      <button class="user-button" style="background: green;" id="perfil">
+        <i class="fa-solid fa-user"></i>
+      </button>
+      
+      <span id="user-email" class="ms-2 text-white" style="display: none;"></span>
+
     </div>
   </nav>
 
@@ -133,6 +147,19 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
   <script src="register.js"></script>
   
+  <script>
+
+    const userMail = sessionStorage.getItem('correo_user')
+
+    const mailSpan = document.getElementById("user-email");
+
+    if (userMail) {
+      mailSpan.textContent = userMail;
+      mailSpan.style.display = "inline"; // mostrar
+    } else {
+      mailSpan.style.display = "none"; // ocultar
+    }
+  </script>
 
 
 </body>

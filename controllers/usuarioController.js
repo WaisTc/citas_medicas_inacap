@@ -2,7 +2,9 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
 
-const { insertarUsuario, validar, medicos, datosCorreo, cita_temporal, card_t, consulta_card, ingresar_cita, notificarAceptacion,citas_aceptadas, dashboard_count, Correo_p } = require('../db/DbConnection');
+const { insertarUsuario, validar, medicos, datosCorreo, cita_temporal, card_t, 
+  consulta_card, ingresar_cita, notificarAceptacion, citas_aceptadas, 
+  dashboard_count, Correo_p, Citasdel_usuario, cancelar_cita_notificacion } = require('../db/DbConnection');
 const conexion = require('../db/DbConnection'); // conexión a la base de datos
 
 const crearUsuario = async (req, res) => {
@@ -54,7 +56,7 @@ const loginUser = async (req, res) => {
     const token = jwt.sign(
       { correo: credenciales.user,
         rol: datos_us.rol
-       }, // puedes incluir también el id si lo tienes
+       }, 
       process.env.JWT_SECRET,
       { expiresIn: '2h' }
     );
@@ -96,13 +98,13 @@ const obtenerDatosPorCorreo = async (req, res) => {
     const c = req.params.correo_user;
 
     try {
-        const rows = await datosCorreo(c); // Espera la promesa
+        const rows = await datosCorreo(c);
 
         if (rows.length === 0) {
             return res.status(404).json({ error: 'Usuario no encontrado' });
         }
 
-        res.json(rows[0]); // Devuelve JSON válido
+        res.json(rows[0]); 
     } catch (error) {
         console.error('Error al obtener datos por correo:', error);
         res.status(500).json({ error: 'Error interno del servidor' });
@@ -193,7 +195,7 @@ const pelao = async (req, res) => {
 
   try {
     const resultado = await dashboard_count(c);
-    return res.json(resultado); // Envia data al frontend
+    return res.json(resultado);
   } catch (error) {
     console.error(error);
     return res.status(500).json({ error: "Error en el servidor" });
@@ -201,7 +203,34 @@ const pelao = async (req, res) => {
 }
 
 
+const citasDel_usuario = async (req, res) => {
+  const c = req.body;
+  const citas = await Citasdel_usuario(c);
+
+  const todas = [...citas.temporales, ...citas.aceptadas];
+  res.json(todas);
+};
+
+
+
+const cancelar_citaU = async (req, res) => {
+  try {
+    const datosCita = req.body;
+
+    const resultado = await cancelar_cita_notificacion(datosCita);
+
+    if (resultado) {
+      res.status(200).json({ success: true, message: "Cita cancelada correctamente" });
+    } else {
+      res.status(400).json({ success: false, message: "No se pudo cancelar la cita" });
+    }
+  } catch (error) {
+    console.error("Error en cancelar_citaU:", error);
+    res.status(500).json({ success: false, message: "Error interno del servidor" });
+  }
+};
+
 
 module.exports = { crearUsuario, loginUser, obtenerMedicos, 
   obtenerDatosPorCorreo, cita_t_empleado, cita_t_solicitud, aceptar_solicitud, 
-  cita_aceptadas_empleado, pelao} ;
+  cita_aceptadas_empleado, pelao, citasDel_usuario, cancelar_citaU} ;

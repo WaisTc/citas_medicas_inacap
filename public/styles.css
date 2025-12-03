@@ -12,6 +12,25 @@ footer h5 {
 
 
 
+
+#asideCarousel {
+  position: absolute;   
+  right: 0;
+  align-items: center;           
+  width: 30%;        
+  height: 100vh;     
+  background-color: #000000; 
+  overflow: hidden;  
+}
+
+#asideCarousel img {
+  height: 100vh;
+  margin: 1px;     
+  object-fit: cover;   
+}
+
+
+
 /******************************* hechas a mano 100% tu mamá y sin IA *******************************/
 .user-button {
   background: radial-gradient(circle, #0d6efd, rgb(47, 6, 172));

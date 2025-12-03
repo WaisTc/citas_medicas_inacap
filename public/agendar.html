@@ -21,88 +21,113 @@
       <div class="collapse navbar-collapse" id="navMenu">
         <ul class="navbar-nav ms-auto">
           <li class="nav-item"><a class="nav-link" href="index.html">Inicio</a></li>
-          <li class="nav-item"><a class="nav-link" href="agendar.html">Agendar</a></li>
           <li class="nav-item"><a class="nav-link" href="#">Contacto</a></li>
+          <li class="nav-item" id="citasUser_"><a class="nav-link" href="citasUser.html">Mis Citas</a></li>
         </ul>
       </div>
+
+      <!-- Botones de usuario -->
       <button class="user-button" id="user-button-ql" onclick="botonQ()">
         <i class="fa-solid fa-user"></i>
       </button>
-
+      
       <button class="user-button" style="background: green;" id="perfil">
         <i class="fa-solid fa-user"></i>
       </button>
+      
+      <span id="user-email" class="ms-2 text-white" style="display: none;"></span>
 
     </div>
   </nav>
 
   <!-- agendar cita  -->
 
-  <div class="mt-5">
-    <h2 class="mb-4">Datos del paciente</h2>
-    <form action="" id="paciente-form" method="post" style="margin-left: 20px; margin-right: 20px;">
-        
-        <div class="mb-3">
-            <label class="form-label"for="rut">RUT:</label>
-            <input class="form-control" type="text" id="rut" name="rut" required>
-        </div>
+  <div class="container mt-5">
+    <div class="card shadow-lg border-0">
+      <div class="card-header bg-primary text-white">
+        <h2 class="mb-0"><i class="bi bi-person-lines-fill"></i> Datos del paciente</h2>
+      </div>
+      <div class="card-body">
+        <form id="paciente-form" method="post">
+          
+          <!-- RUT -->
+          <div class="mb-3">
+            <label for="rut" class="form-label"><i class="bi bi-card-text"></i> RUT</label>
+            <input type="text" class="form-control" id="rut" name="rut" placeholder="Ej: 12.345.678-9" required>
+          </div>
 
-        <div class="mb-3"> 
-            <label class="form-label"class="form-label"for="nombres">Nombres:</label>
-            <input class="form-control" type="text" id="nombres" name="nombres" required>
-        </div>
+          <!-- Nombres -->
+          <div class="mb-3">
+            <label for="nombres" class="form-label"><i class="bi bi-person"></i> Nombres</label>
+            <input type="text" class="form-control" id="nombres" name="nombres" placeholder="Ingrese nombres" required>
+          </div>
 
-        <div class="mb-3">
-            <label class="form-label"for="primer_apellido">Primer Apellido:</label>
-            <input class="form-control" type="text" id="primer_apellido" name="primer_apellido" required>
-        </div>
+          <!-- Apellidos -->
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label for="primer_apellido" class="form-label">Primer Apellido</label>
+              <input type="text" class="form-control" id="primer_apellido" name="primer_apellido" required>
+            </div>
+            <div class="col-md-6 mb-3">
+              <label for="segundo_apellido" class="form-label">Segundo Apellido</label>
+              <input type="text" class="form-control" id="segundo_apellido" name="segundo_apellido">
+            </div>
+          </div>
 
-        <div class="mb-3">
-            <label class="form-label"for="segundo_apellido">Segundo Apellido:</label>
-            <input class="form-control" type="text" id="segundo_apellido" name="segundo_apellido">
-        </div>
+          <!-- Contacto -->
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label for="correo" class="form-label"><i class="bi bi-envelope"></i> Correo</label>
+              <input type="email" class="form-control" id="correo" name="correo" placeholder="ejemplo@correo.com">
+            </div>
+            <div class="col-md-6 mb-3">
+              <label for="telefono" class="form-label"><i class="bi bi-telephone"></i> Teléfono</label>
+              <input type="text" class="form-control" id="telefono" name="telefono" placeholder="+56 9 1234 5678">
+            </div>
+          </div>
 
-        <div class="mb-3">
-            <label class="form-label"for="correo">Correo:</label>
-            <input class="form-control" type="email" id="correo" name="correo">
-        </div>
+          <!-- Dirección -->
+          <div class="mb-3">
+            <label for="direccion" class="form-label"><i class="bi bi-house"></i> Dirección</label>
+            <input type="text" class="form-control" id="direccion" name="direccion" placeholder="Ingrese dirección">
+          </div>
 
-        <div class="mb-3">
-            <label class="form-label"for="telefono">Teléfono:</label>
-            <input class="form-control" type="text" id="telefono" name="telefono">
-        </div>
+          <!-- Fecha de nacimiento -->
+          <div class="mb-3">
+            <label for="fecha_nacimiento" class="form-label"><i class="bi bi-calendar-date"></i> Fecha de Nacimiento</label>
+            <input type="date" class="form-control" id="fecha_nacimiento" name="fecha_nacimiento">
+          </div>
 
-        <div class="mb-3">
-            <label class="form-label"for="direccion">Dirección:</label>
-            <input class="form-control" type="text" id="direccion" name="direccion">
-        </div>
-        
-        <div class="mb-3">
-            <label class="form-label"for="fecha_nacimiento">Fecha de Nacimiento:</label>
-            <input class="form-control" type="date" id="fecha_nacimiento" name="fecha_nacimiento">
-        </div>
+          <!-- Plan de salud -->
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label for="plan_salud_nombre" class="form-label">Plan de Salud</label>
+              <input type="text" class="form-control" id="plan_salud_nombre" name="plan_salud_nombre">
+            </div>
+            <div class="col-md-6 mb-3">
+              <label for="plan_salud_tipo" class="form-label">Tipo de Plan</label>
+              <input type="text" class="form-control" id="plan_salud_tipo" name="plan_salud_tipo">
+            </div>
+          </div>
 
-        <div class="mb-3">
-            <label class="form-label"for="plan_salud_nombre">Plan de Salud:</label>
-            <input class="form-control" type="text" id="plan_salud_nombre" name="plan_salud_nombre">
-        </div>
+          <!-- Doctor -->
+          <div class="mb-3">
+            <label for="doctor_select" class="form-label"><i class="bi bi-person-badge"></i> Doctor</label>
+            <select id="doctor_select" name="doctor" class="form-select">
+              <option value="">Selecciona</option>
+            </select>
+          </div>
 
-        <div class="mb-3">
-            <label class="form-label"for="plan_salud_tipo">Tipo de Plan:</label>
-            <input class="form-control" type="text" id="plan_salud_tipo" name="plan_salud_tipo">
-        </div>
+          <!-- Botón -->
+          <div class="text-center">
+            <button type="submit" class="btn btn-success btn-lg">
+              <i class="bi bi-check-circle"></i> Confirmar
+            </button>
+          </div>
 
-        <div class="form-group" style="margin-bottom: 10px;">
-          <label for="doctor_select">Doctor</label>
-          <select id="doctor_select" name="doctor" class="form-control">
-            <option value="">Selecciona</option>
-          </select>
-        </div>
-
-
-        <button class="btn btn-primary" type="submit">Confirmar</button>
-
-    </form>
+        </form>
+      </div>
+    </div>
   </div>
 
 
@@ -134,6 +159,13 @@
   <script src="agendar.js"></script>
   <script>
     const token = sessionStorage.getItem('token');
+    const rol = sessionStorage.getItem('rol')
+
+    if(rol == 2){
+      alert("Usuario no permitido")
+      window.location.href = 'index.html'; // Redirige al index
+    }
+
 
     if (token) {
       // Desabilitar boton inicio de sesion
@@ -207,6 +239,22 @@
         }
     </script>
 
+  <script>
+
+    const userMail = sessionStorage.getItem('correo_user')
+
+    const mailSpan = document.getElementById("user-email");
+
+    if (userMail) {
+      mailSpan.textContent = userMail;
+      mailSpan.style.display = "inline"; // mostrar
+    } else {
+      mailSpan.style.display = "none"; // ocultar
+    }
+  </script>
+
+
+    
 
 
   </body>

@@ -34,6 +34,10 @@ function crearCard(cita) {
           <strong>Paciente:</strong> <span>${cita.rut_paciente}</span>
         </p>
 
+        <p class="card-text rut_medico">
+          <strong>Medico:</strong> <span>${cita.rut_medico}</span>
+        </p>
+
         <p class="card-text tipo"><strong>Tipo:</strong> ${cita.tipo_cita || 'General'}</p>
 
         <div class="mb-2">
@@ -348,3 +352,57 @@ async function grafico_p() {
 
 
 // RECORDAR CAMBIAR ESTA COSA D GRAFICO AAAAAAAA
+
+
+
+// ==================== RECHAZAR CITA ====================
+async function rechazarCita(id_cita) {
+  const card = document.querySelector(`#fecha-${id_cita}`)?.closest(".card");
+  if (!card) {
+    alert("No se encontró la cita en la interfaz.");
+    return;
+  }
+
+  // Extraer rut
+  const rut_p = card.querySelector('.rut_paciente span')?.textContent?.trim();
+  const rut_m = card.querySelector('.rut_medico span')?.textContent?.trim();
+
+  if (!id_cita || !rut_p || !rut_m) {
+    alert("Datos insuficientes para rechazar la cita.");
+    return;
+  }
+
+  const cita = {
+    id_cita,
+    rut_paciente: rut_p,
+    rut_medico: rut_m,
+    estado_cita: "EN PROCESO"
+  };
+
+  // Confirmación
+  const confirmar = confirm("¿Seguro que deseas rechazar esta cita?");
+  if (!confirmar) return;
+
+  try {
+    const res = await fetch("http://localhost:3000/api/usuario/cancelar_cita", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(cita)
+    });
+
+    const result = await res.json();
+
+    if (res.ok) {
+      alert("Cita rechazada correctamente.");
+      // Recargar listas
+      await cargarCitasTemporales();
+      await cargarCitasAceptadas();
+    } else {
+      alert("Error al rechazar la cita.");
+      console.error(result.error);
+    }
+  } catch (error) {
+    alert("Error de conexión con el servidor.");
+    console.error(error);
+  }
+}

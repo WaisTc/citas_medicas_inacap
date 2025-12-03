@@ -22,27 +22,93 @@
         <ul class="navbar-nav ms-auto">
           <li class="nav-item"><a class="nav-link" href="index.html">Inicio</a></li>
           <li class="nav-item" id="agendar"><a class="nav-link" href="agendar.html">Agendar</a></li>
-          <li class="nav-item" id="horario"><a class="nav-link" href="horario.html">horario</a></li>
+          <li class="nav-item" id="horario"><a class="nav-link" href="horario.html">Horario</a></li>
           <li class="nav-item"><a class="nav-link" href="#">Contacto</a></li>
+          <li class="nav-item" id="citasUser_"><a class="nav-link" href="citasUser.html">Mis Citas</a></li>
         </ul>
       </div>
+
+      <!-- Botones de usuario -->
       <button class="user-button" id="user-button-ql" onclick="botonQ()">
         <i class="fa-solid fa-user"></i>
       </button>
-
+      
       <button class="user-button" style="background: green;" id="perfil">
         <i class="fa-solid fa-user"></i>
       </button>
+      
+      <span id="user-email" class="ms-2 text-white" style="display: none;"></span>
 
     </div>
   </nav>
 
 
-  <!-- Informacion de interes de la pagina  -->
-  <div style="margin-top: 100px;">
-    Lorem ipsum dolor sit amet consectetur, adipisicing elit. Optio excepturi beatae corrupti delectus iure. Aperiam, quibusdam tempore! Iure inventore placeat reprehenderit totam libero sunt, necessitatibus excepturi expedita rerum nihil reiciendis nobis commodi quaerat odio exercitationem! Dolor fugit neque libero deserunt velit reprehenderit unde sequi quibusdam laudantium possimus temporibus numquam quia facilis sint cum eos, provident quas, corrupti, repellat doloribus voluptates exercitationem? Neque architecto omnis vero quidem facilis cum tenetur, explicabo temporibus sint, ex adipisci praesentium! Explicabo, numquam at. Nobis quisquam rem ex in vero possimus modi architecto enim consequuntur dicta aliquid repellendus sapiente tempore, omnis nemo harum officiis ea nesciunt!
+  <!-- Div de información dinámica -->
+  <div id="infoMedico" style="position: absolute; left: 100px; width: 56%; background-color: rgb(149, 138, 255); border-radius: 10px;" class="mt-4 p-3">
+    <h4>NOMBRE:</h4>
+    <p id="nombreMedico">---</p>
+    <h4>ESPECIALIDAD:</h4>
+    <p id="especialidadMedico">---</p>
+    <h4>DESCRIPCIÓN PROFESIONAL DE SU TRABAJO:</h4>
+    <p id="descripcionMedico">---</p>
+    <h4>LUGAR DE ATENCIÓN:</h4>
+    <p id="lugarMedico">---</p>
+    
+    <button 
+      style=
+        "height: 40px; 
+        width: 100%; 
+        background-color: rgb(27, 135, 223);
+        border-radius: 10px;" 
+      class="text-white" id="agendar_index">
+
+        Agendar Cita
+
+    </button>
   </div>
-  
+
+  <!-- Aside con carousel -->
+  <aside id="asideCarousel">
+    <div id="medicosCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="8000">
+      <div class="carousel-inner">
+        <!-- Item 1 -->
+        <div class="carousel-item active"
+            data-nombre="Dr. Pérez"
+            data-especialidad="Cardiología"
+            data-descripcion="Más de 15 años de experiencia en diagnóstico y tratamiento de enfermedades cardiovasculares."
+            data-lugar="Clínica Jardín del Alma">
+          <img src="imagenes/imagen1.jpg" class="d-block w-100" alt="Médico 1">
+        </div>
+
+        <!-- Item 2 -->
+        <div class="carousel-item"
+            data-nombre="Dra. González"
+            data-especialidad="Pediatría"
+            data-descripcion="Atiende niños y adolescentes, enfocada en prevención y desarrollo saludable."
+            data-lugar="Hospital Regional del Maule">
+          <img src="imagenes/imagen2.jpg" class="d-block w-100" alt="Médico 2">
+        </div>
+
+        <!-- Item 3 -->
+        <div class="carousel-item"
+            data-nombre="Dr. Ramírez"
+            data-especialidad="Neurología"
+            data-descripcion="Especialista en trastornos neurológicos, investigación clínica y atención integral."
+            data-lugar="Centro Médico Molina">
+          <img src="imagenes/imagen3.jpg" class="d-block w-100" alt="Médico 3">
+        </div>
+      </div>
+
+      <!-- Controles -->
+      <button class="carousel-control-prev" type="button" data-bs-target="#medicosCarousel" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon"></span>
+      </button>
+      <button class="carousel-control-next" type="button" data-bs-target="#medicosCarousel" data-bs-slide="next">
+        <span class="carousel-control-next-icon"></span>
+      </button>
+    </div>
+  </aside>
+
 
   <div class="pantalla"></div>
 
@@ -88,7 +154,7 @@
 
 
   <!-- Footer -->
-  <footer class="bg-dark text-white pt-4 pb-2 mt-5" style="width: 100%; bottom: 0px;">
+  <footer class="bg-dark text-white pt-4 pb-2 mt-0" style="width: 100%; bottom: 0px;">
     <div class="container text-center text-md-start" >
       <div class="row">
         <div class="col-md-6 mb-3" >
@@ -136,12 +202,71 @@
 
     if(rol == 2){
       document.getElementById('agendar').style.display = 'none';
+      document.getElementById('citasUser_').style.display = 'none';
     }
     if(rol == 1 || rol == null){
       document.getElementById('horario').style.display = 'none';
     }
 
   </script>
+
+  <script>
+
+    const userMail = sessionStorage.getItem('correo_user')
+
+    const mailSpan = document.getElementById("user-email");
+
+    if (userMail) {
+      mailSpan.textContent = userMail;
+      mailSpan.style.display = "inline"; // mostrar
+    } else {
+      mailSpan.style.display = "none"; // ocultar
+    }
+  </script>
+
+  <script>
+    const carousel = document.getElementById('medicosCarousel');
+
+    carousel.addEventListener('slid.bs.carousel', function (event) {
+      const activeItem = event.relatedTarget;
+
+      document.getElementById('nombreMedico').textContent = activeItem.getAttribute('data-nombre');
+      document.getElementById('especialidadMedico').textContent = activeItem.getAttribute('data-especialidad');
+      document.getElementById('descripcionMedico').textContent = activeItem.getAttribute('data-descripcion');
+      document.getElementById('lugarMedico').textContent = activeItem.getAttribute('data-lugar');
+    });
+
+    const firstItem = document.querySelector('.carousel-item.active');
+    document.getElementById('nombreMedico').textContent = firstItem.getAttribute('data-nombre');
+    document.getElementById('especialidadMedico').textContent = firstItem.getAttribute('data-especialidad');
+    document.getElementById('descripcionMedico').textContent = firstItem.getAttribute('data-descripcion');
+    document.getElementById('lugarMedico').textContent = firstItem.getAttribute('data-lugar');
+  </script>
+
+  <script>
+    
+    
+    document.getElementById("agendar_index").addEventListener('click', () =>{
+      const agendar_index_rol = sessionStorage.getItem("rol");
+
+      if(agendar_index_rol == 1){
+        window.location.href = 'agendar.html';
+      }
+      else if(agendar_index_rol == null){
+        botonQ();
+      }
+      else if(agendar_index_rol == 2){
+        window.location.href = 'horario.html';
+      }
+      else{
+        alert("Este no es un usuario valido.")
+      }
+
+    });
+
+
+  </script>
+
 
   </body>
 </html>
