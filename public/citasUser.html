@@ -1,165 +1,182 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Sistema de Agendamiento</title>
+  <title>Mis Citas | Shuby Agends</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
   <script src="https://kit.fontawesome.com/0b464b9606.js" crossorigin="anonymous"></script>
-  <script src="citasUser.js"></script>
+  <script src="citasUser.js" defer></script>
 </head>
+
 <body>
 
   <!-- Navbar -->
-  <nav class="navbar navbar-expand-lg navbar-dark bg-primary" style="min-width: 100%;">
+  <nav class="navbar navbar-expand-lg navbar-light sticky-top">
     <div class="container">
-      <a class="navbar-brand" href="#">Shuby Agends</a>
+      <a class="navbar-brand" href="#">
+        <i class="bi bi-calendar-check-fill me-2"></i>Shuby Agends
+      </a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navMenu">
-        <ul class="navbar-nav ms-auto">
+        <ul class="navbar-nav ms-auto align-items-center">
           <li class="nav-item"><a class="nav-link" href="index.html">Inicio</a></li>
           <li class="nav-item" id="agendar"><a class="nav-link" href="agendar.html">Agendar</a></li>
           <li class="nav-item"><a class="nav-link" href="#">Contacto</a></li>
+
+          <!-- Acciones de Usuario -->
+          <li class="nav-item ms-lg-3 d-flex align-items-center gap-2">
+            <span id="user-email" class="text-muted small fw-bold" style="display: none;"></span>
+
+            <button class="user-button" id="user-button-display" onclick="botonQ()" title="Iniciar Sesión">
+              <i class="fa-solid fa-user"></i>
+            </button>
+
+            <button class="user-button" style="background: #2ecc71; color: white; border-color: #2ecc71;" id="perfil"
+              title="Cerrar Sesión">
+              <i class="fa-solid fa-user-check"></i>
+            </button>
+          </li>
         </ul>
       </div>
-
-      <!-- Botones de usuario -->
-      <button class="user-button" id="user-button-ql" onclick="botonQ()">
-        <i class="fa-solid fa-user"></i>
-      </button>
-      
-      <button class="user-button" style="background: green;" id="perfil">
-        <i class="fa-solid fa-user"></i>
-      </button>
-      
-      <span id="user-email" class="ms-2 text-white" style="display: none;"></span>
-
     </div>
   </nav>
 
+  <!-- Contenido Principal -->
+  <div class="container py-5" style="min-height: calc(100vh - 200px);">
+    <div class="row justify-content-center">
+      <div class="col-lg-10">
+        <div class="text-center mb-5">
+          <h2 class="fw-bold text-primary">Solicitudes de Citas Médicas</h2>
+          <p class="text-muted">Revisa el estado y detalles de tus citas agendadas.</p>
+        </div>
 
-  <!-- Informacion de interes de la pagina  -->
-  <div class="containet mt-4" style="margin-left: 5%; margin-right: 5%;">
-        <h3 class="text-center">Solicitudes de citas medicas</h3>
-        <div id="citas-container" class="row row-cols-1 row-cols-md-3 g-0"></div>
+        <!-- Contenedor de Citas -->
+        <div id="citas-container" class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+        </div>
+      </div>
+    </div>
   </div>
-  
-
-  <div class="pantalla"></div>
-
 
   <!-- Login Modal/Formulario -->
-  <div class="modal fade show d-block form_style form_visible" tabindex="-1" style="background:rgba(0,0,0,0.3);">
+  <div class="modal fade" id="loginModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content rounded shadow">
+      <div class="modal-content shadow-lg">
         <div class="modal-header border-0 pb-0">
-          <h5 class="modal-title fw-bold">Iniciar Sesión</h5>
+          <h5 class="modal-title fw-bold text-primary">Bienvenido de nuevo</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
-        <div class="modal-body pt-0">
+        <div class="modal-body p-4 pt-2">
+          <p class="text-muted mb-4">Ingresa tus credenciales para acceder</p>
           <form id="Login">
-            <div class="mb-3">
-              <label class="form-label" for="login_user">Usuario</label>
+            <div class="form-floating mb-3">
               <input type="text" class="form-control" id="login_user" placeholder="email">
+              <label for="login_user">Usuario / Email</label>
             </div>
-            <div class="mb-3">
-              <label class="form-label" for="login_password">Contraseña</label>
+            <div class="form-floating mb-3">
               <input type="password" class="form-control" id="login_password" placeholder="contraseña">
+              <label for="login_password">Contraseña</label>
             </div>
-            <button type="submit" class="btn btn-primary w-100 mb-3">Entrar</button>
+            <button type="submit" class="btn btn-primary w-100 py-2 fw-bold mb-3">Entrar</button>
           </form>
-          <div class="text-center mb-2">
-            <small>¿No tienes una cuenta? <a href="register.html">Regístrate aquí</a></small><br>
-            <small><a href="#">¿Olvidaste tu contraseña?</a></small>
+
+          <div class="text-center mb-3">
+            <small>¿No tienes una cuenta? <a href="register.html" class="fw-bold">Regístrate aquí</a></small>
           </div>
-          <div class="d-grid gap-2 mb-2">
-            <button class="btn btn-danger" type="button">
-              <i class="bi bi-google"></i> Entrar con Google
+
+          <div class="d-grid gap-2">
+            <button class="btn btn-outline-danger" type="button">
+              <i class="bi bi-google me-2"></i> Continuar con Google
             </button>
-            <button class="btn btn-primary" style="background-color:#5865F2; border:none;" type="button">
-              <i class="bi bi-discord"></i> Entrar con Discord
+            <button class="btn btn-outline-primary" style="border-color: #5865F2; color: #5865F2;" type="button">
+              <i class="bi bi-discord me-2"></i> Continuar con Discord
             </button>
-          </div>
-          <div class="text-center mt-2">
-            <button class="btn btn-link text-secondary" data-bs-dismiss="modal" onclick="botonQ()">Cerrar</button>
           </div>
         </div>
       </div>
     </div>
   </div>
 
-
   <!-- Footer -->
-  <footer class="bg-dark text-white pt-4 pb-2 mt-5" style="width: 100%; bottom: 0px;">
-    <div class="container text-center text-md-start" >
-      <div class="row">
-        <div class="col-md-6 mb-3" >
-          <h5>AgendApp</h5>
-          <p>Proyecto universitario desarrollado por Allan y Javier.</p>
+  <footer class="bg-white border-top mt-auto">
+    <div class="container py-4">
+      <div class="row align-items-center">
+        <div class="col-md-6 text-center text-md-start mb-3 mb-md-0">
+          <h5 class="mb-1 fw-bold text-primary">Shuby Agends</h5>
+          <p class="text-muted small mb-0">Innovando en la gestión de salud.</p>
+          <p class="text-muted small">Desarrollado por Allan y Javier.</p>
         </div>
-        <div class="col-md-6 text-md-end">
-          <a href="#" class="text-white me-3"><i class="bi bi-facebook"></i></a>
-          <a href="#" class="text-white me-3"><i class="bi bi-instagram"></i></a>
-          <a href="#" class="text-white"><i class="bi bi-envelope-fill"></i></a>
+        <div class="col-md-6 text-center text-md-end">
+          <div class="social-links">
+            <a href="#" class="me-3 fs-5 text-secondary"><i class="bi bi-facebook"></i></a>
+            <a href="#" class="me-3 fs-5 text-secondary"><i class="bi bi-instagram"></i></a>
+            <a href="#" class="fs-5 text-secondary"><i class="bi bi-envelope-fill"></i></a>
+          </div>
         </div>
       </div>
-      <hr class="bg-light">
-      <div class="text-center">
-        <p class="mb-0">&copy; 2025 Todos los derechos reservados</p>
+      <hr class="my-4">
+      <div class="text-center text-muted small">
+        <p class="mb-0">&copy; 2025 Shuby Agends. Todos los derechos reservados.</p>
       </div>
     </div>
   </footer>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
   <script src="script.js"></script>
+
   <script>
     const token = sessionStorage.getItem('token');
     const rol_us = sessionStorage.getItem('rol');
 
     if (token) {
+      // Desabilitar boton inicio de sesion
+      const btnDisplay = document.getElementById('user-button-display');
+      if (btnDisplay) btnDisplay.style.display = 'none';
 
-      document.getElementById('user-button-ql').style.display = 'none';
-
-      document.getElementById('perfil').addEventListener('click', () => {
-        sessionStorage.removeItem('token'); 
-        sessionStorage.removeItem('correo_user'); 
-        sessionStorage.removeItem('rol');
-        alert("Cerrando sesion")
-        window.location.href = 'index.html'; 
-      });
+      // Cerrar sesion
+      const btnPerfil = document.getElementById('perfil');
+      if (btnPerfil) {
+        btnPerfil.addEventListener('click', () => {
+          sessionStorage.removeItem('token');
+          sessionStorage.removeItem('correo_user');
+          sessionStorage.removeItem('rol');
+          alert("Cerrando sesión...");
+          window.location.href = 'index.html';
+        });
+      }
     }
-    else{
-      document.getElementById('perfil').style.display = 'none';
+    else {
+      const btnPerfil = document.getElementById('perfil');
+      if (btnPerfil) btnPerfil.style.display = 'none';
     }
   </script>
 
   <script>
     const rol = sessionStorage.getItem('rol')
 
-    if(rol != 1){
-        alert("Usuario no permitido")
-        window.location.href = 'index.html'; 
+    if (rol != 1) {
+      alert("Usuario no permitido. Debes iniciar sesión como paciente.")
+      window.location.href = 'index.html';
     }
-
   </script>
-
 
   <script>
-
     const userMail = sessionStorage.getItem('correo_user')
-
     const mailSpan = document.getElementById("user-email");
 
-    if (userMail) {
+    if (userMail && mailSpan) {
       mailSpan.textContent = userMail;
-      mailSpan.style.display = "inline"; // mostrar
-    } else {
-      mailSpan.style.display = "none"; // ocultar
+      mailSpan.style.display = "inline";
+    } else if (mailSpan) {
+      mailSpan.style.display = "none";
     }
   </script>
 
-  </body>
+</body>
+
 </html>

@@ -7,16 +7,29 @@ function agendar(servicio, fecha, hora) {
 
 
 function botonQ() {
-  const userButton = document.querySelector(".user-button")
-  const userToggle = document.querySelector(".form_style")
+  const loginModalEl = document.getElementById('loginModal');
 
-  userButton.classList.toggle("user-button_invisible")
-  userToggle.classList.toggle("form_visible")
+  if (window.bootstrap) {
+    const loginModal = bootstrap.Modal.getOrCreateInstance(loginModalEl);
+    if (loginModalEl.classList.contains('show')) {
+      loginModal.hide();
+    } else {
+      loginModal.show();
+    }
+  } else {
+    if (loginModalEl.style.display === 'block') {
+      loginModalEl.style.display = 'none';
+      loginModalEl.classList.remove('show');
+    } else {
+      loginModalEl.style.display = 'block';
+      loginModalEl.classList.add('show');
+    }
+  }
 }
 
 
 
-document.getElementById("Login").addEventListener("submit", async function(e) {
+document.getElementById("Login").addEventListener("submit", async function (e) {
   e.preventDefault();
   const form = e.target;
   const credenciales = {
@@ -39,7 +52,6 @@ document.getElementById("Login").addEventListener("submit", async function(e) {
       sessionStorage.setItem("correo_user", data.correo);
       sessionStorage.setItem("rol", data.rol);
 
-      // Redirigir al usuario a su perfil o dashboard
       window.location.href = 'index.html';
     } else {
       alert(data.error || 'Login fallido');

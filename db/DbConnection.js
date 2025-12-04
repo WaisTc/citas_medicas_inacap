@@ -169,11 +169,11 @@ async function insertarUsuario(datos) {
     segundo_apellido, correo, telefono, direccion, fecha_nacimiento, rol, plan_salud_nombre, plan_salud_tipo) 
     VALUES (?, ?, ?, ?, ?, ?, ?, ?, 1, ?, ?);
   `;
-  const valores_paciente = [datos.rut, datos.nombre, datos.apellido1, datos.apellido2, 
-    datos.correo, datos.telefono, datos.direccion, datos.nacimiento, datos.plan_n, datos.plan_t];
+  const valores_paciente = [datos.rut, datos.nombre, datos.apellido1, datos.apellido2,
+  datos.correo, datos.telefono, datos.direccion, datos.nacimiento, datos.plan_n, datos.plan_t];
   await conexion.execute(sql_paciente, valores_paciente);
 
-  const usuario_paciente ='INSERT INTO usuario(usuario, contraseña, rol) VALUES(?, ?, 1)'
+  const usuario_paciente = 'INSERT INTO usuario(usuario, contraseña, rol) VALUES(?, ?, 1)'
   const valores_usuario = [datos.correo, datos.password]
   await conexion.execute(usuario_paciente, valores_usuario);
 }
@@ -181,7 +181,7 @@ async function insertarUsuario(datos) {
 async function validar(credenciales) {
 
   const [resultado_correo] = await conexion.execute(
-    'SELECT COUNT(*) AS total FROM usuario WHERE usuario = ?', 
+    'SELECT COUNT(*) AS total FROM usuario WHERE usuario = ?',
     [credenciales.user]
   );
 
@@ -197,7 +197,7 @@ async function validar(credenciales) {
     const rol = rows[0].rol;
 
     return { hashGuardado, rol }; // Devuelve ambos valores
-  } 
+  }
   else {
     console.log("Correo no encontrado.");
     return null;
@@ -208,7 +208,7 @@ async function validar(credenciales) {
 
 
 async function Correo_p(r) {
-  const [c] = await conexion.query('SELECT correo FROM paciente WHERE rut_paciente = ?',[r]);
+  const [c] = await conexion.query('SELECT correo FROM paciente WHERE rut_paciente = ?', [r]);
   const correo = c[0]
   return correo
 }
@@ -229,7 +229,7 @@ async function datosCorreo(c) {
     [c]
   );
   return rows;
-  
+
 }
 
 
@@ -265,7 +265,7 @@ async function card_t(c_user) {
       [rut]
     );
 
-    return citas; 
+    return citas;
   } catch (error) {
     console.error('Error en card_t:', error);
     return null;
@@ -274,14 +274,14 @@ async function card_t(c_user) {
 
 
 async function consulta_card(id_card) {
-  
-  const [rows] = await conexion.execute('SELECT estado_cita, rut_paciente, rut_medico FROM cita_temporal WHERE id_cita = ?',[id_card])
+
+  const [rows] = await conexion.execute('SELECT estado_cita, rut_paciente, rut_medico FROM cita_temporal WHERE id_cita = ?', [id_card])
 
   return rows;
 }
 
 async function ingresar_cita(datosFront, datosBack) {
-  
+
   const sql = 'INSERT INTO cita(fecha_hora, estado_cita, tipo_cita, rut_paciente, rut_medico, lugar_atencion) VALUES(?, ?, ? ,? ,? ,?)';
   const valores = [datosFront.fecha_cita, "Aceptada", datosFront.tipo_cita, datosBack.rut_paciente, datosBack.rut_medico, datosFront.lugar_atencion]
 
@@ -292,7 +292,7 @@ async function ingresar_cita(datosFront, datosBack) {
     console.log("Cita insertada correctamente");
 
     await conexion.execute(sql_del, [datosFront.id_cita])
-  } 
+  }
   catch (err) {
     console.error("Error al insertar cita:", err.message);
   }
@@ -302,7 +302,7 @@ async function ingresar_cita(datosFront, datosBack) {
 
 
 async function citas_aceptadas(correo) {
-  
+
   const sql = 'SELECT rut_empleado FROM empleado WHERE correo = ?'
   const [resultado] = await conexion.execute(sql, [correo])
 
@@ -342,7 +342,7 @@ async function dashboard_count(correo_d) {
     citasPorMes[mes]++;
   });
 
-  return citasPorMes; 
+  return citasPorMes;
 }
 
 
@@ -351,7 +351,7 @@ async function Citasdel_usuario(c) {
 
   const [rut_P] = await conexion.execute("SELECT rut_paciente FROM paciente WHERE correo = ?", [c.correo]);
   const rut_limpio = rut_P[0].rut_paciente;
-  
+
 
   const [resultado_temporal] = await conexion.execute("SELECT * FROM cita_temporal WHERE rut_paciente = ?", [rut_limpio]);
   const [resultado_aceptadas] = await conexion.execute("SELECT * FROM cita WHERE rut_paciente = ?", [rut_limpio])
@@ -372,20 +372,20 @@ async function cancelar_cita_notificacion(datos) {
   const [correo_paciente] = await conexion.execute("SELECT correo FROM paciente WHERE rut_paciente = ?", [datos.rut_paciente]);
   const correo_paciente_limpio = correo_paciente[0].correo;
 
-  if(datos.estado_cita == "EN PROCESO"){
+  if (datos.estado_cita == "EN PROCESO") {
     await conexion.execute("DELETE FROM cita_temporal WHERE id_cita = ?", [datos.id_cita]);
     notificarCancelacion(datos, correo_paciente_limpio)
     const resultado = true;
     return resultado;
   }
-  else if(datos.estado_cita == "Aceptada"){
+  else if (datos.estado_cita == "Aceptada") {
     await conexion.execute("DELETE FROM cita WHERE id_cita = ?", [datos.id_cita]);
     notificarCancelacion(datos, correo_paciente_limpio)
     //notificarCancelacion(datos, correo_medico_limpio)
     const resultado = true;
     return resultado;
   }
-  else{
+  else {
     return false;
   }
 
@@ -393,10 +393,11 @@ async function cancelar_cita_notificacion(datos) {
 
 
 
-module.exports = { insertarUsuario, 
-  validar, medicos, datosCorreo, cita_temporal, 
-  card_t, consulta_card, ingresar_cita, 
-  citas_aceptadas, dashboard_count, notificarAceptacion, Correo_p, 
+module.exports = {
+  insertarUsuario,
+  validar, medicos, datosCorreo, cita_temporal,
+  card_t, consulta_card, ingresar_cita,
+  citas_aceptadas, dashboard_count, notificarAceptacion, Correo_p,
   Citasdel_usuario, cancelar_cita_notificacion
 };
 
