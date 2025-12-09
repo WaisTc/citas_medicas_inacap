@@ -354,7 +354,7 @@ async function Citasdel_usuario(c) {
 
 
   const [resultado_temporal] = await conexion.execute("SELECT * FROM cita_temporal WHERE rut_paciente = ?", [rut_limpio]);
-  const [resultado_aceptadas] = await conexion.execute("SELECT * FROM cita WHERE rut_paciente = ?", [rut_limpio])
+  const [resultado_aceptadas] = await conexion.execute("SELECT * FROM cita WHERE rut_paciente = ? AND fecha_hora >= NOW()", [rut_limpio])
 
   return {
     temporales: resultado_temporal,
