@@ -281,7 +281,7 @@
           return res.json();
         })
         .then(data => {
-          document.getElementById("rut").value = data.rut_paciente || "";
+          document.getElementById("rut").value = data.rut_persona || "";
           document.getElementById("nombres").value = data.nombres || "";
           document.getElementById("segundo_apellido").value = data.segundo_apellido || "";
           document.getElementById("primer_apellido").value = data.primer_apellido || "";

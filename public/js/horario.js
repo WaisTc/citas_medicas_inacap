@@ -4,9 +4,9 @@ const citasAceptadas = [];
 function normalizarFechaHora(fechaHoraStr) {
   const d = new Date(fechaHoraStr);
   const pad = (n) => String(n).padStart(2, "0");
-  const fecha = `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+  const fecha = `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
   const hora = `${pad(d.getHours())}:${pad(d.getMinutes())}`;
-  return `${fecha} ${hora}`; 
+  return `${fecha} ${hora}`;
 }
 
 function obtenerHorasOcupadas() {
@@ -18,10 +18,10 @@ function crearCard(cita) {
   const ahora = new Date();
   const mañana = new Date(ahora.getTime() + 24 * 60 * 60 * 1000);
   const isoMañana = new Date(mañana.getTime() - mañana.getTimezoneOffset() * 60000)
-                      .toISOString().slice(0, 10);
+    .toISOString().slice(0, 10);
 
-  const fechaBase = cita.fecha_hora 
-    ? cita.fecha_hora.slice(0,10) 
+  const fechaBase = cita.fecha_hora
+    ? cita.fecha_hora.slice(0, 10)
     : isoMañana;
 
   return `
@@ -108,7 +108,7 @@ function crearCardAceptada(aceptada) {
   });
 
   const fechaLocal = new Date(aceptada.fecha_hora);
-  const opciones = { 
+  const opciones = {
     year: 'numeric', month: '2-digit', day: '2-digit',
     hour: '2-digit', minute: '2-digit',
     hour12: false, timeZone: 'America/Santiago'
@@ -169,7 +169,7 @@ async function aceptarCita(boton) {
     return;
   }
 
-  const cita = { id_cita, fecha_cita, lugar_atencion, tipo_cita, rut, fecha, hora};
+  const cita = { id_cita, fecha_cita, lugar_atencion, tipo_cita, rut, fecha, hora };
 
   try {
     const res = await fetch('http://localhost:3000/api/usuario/aceptar', {
@@ -260,8 +260,8 @@ async function cargarCitasTemporales() {
 
 // ==================== ORDEN DE CARGA ====================
 window.addEventListener('DOMContentLoaded', async () => {
-  await cargarCitasAceptadas(); 
-  await cargarCitasTemporales();  
+  await cargarCitasAceptadas();
+  await cargarCitasTemporales();
 });
 
 

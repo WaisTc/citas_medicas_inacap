@@ -1,7 +1,7 @@
-document.getElementById('paciente-form').addEventListener('submit', async function(e) {
+document.getElementById('paciente-form').addEventListener('submit', async function (e) {
   e.preventDefault();
   const form = e.target;
-  
+
   const datos = {
     nombres: form.nombres.value,
     apellido1: form.primer_apellido.value.trim(),
@@ -23,19 +23,19 @@ document.getElementById('paciente-form').addEventListener('submit', async functi
     },
     body: JSON.stringify(datos)
   })
-  .then(res => {
-    if (!res.ok) throw new Error(`Error: ${res.status}`);
-    return res.json();
-  })
-  .then(resultado => {
-    
-    console.log('Respuesta del servidor:', resultado);
-    alert("Procesado correctamente");
-    window.location.href = 'index.html';
-  })
-  .catch(error => {
-    console.error('Error en el fetch:', error.message);
-  });
+    .then(res => {
+      if (!res.ok) throw new Error(`Error: ${res.status}`);
+      return res.json();
+    })
+    .then(resultado => {
+
+      console.log('Respuesta del servidor:', resultado);
+      alert("Procesado correctamente");
+      window.location.href = 'index.html';
+    })
+    .catch(error => {
+      console.error('Error en el fetch:', error.message);
+    });
 
 });
 

@@ -165,7 +165,7 @@
   <script>
     const rol = sessionStorage.getItem('rol');
 
-    if (rol == 1 || rol == null) {
+    if (rol != 2 && rol != 3) {
       alert('Acceso denegado: Área exclusiva para médicos.')
       window.location.href = 'index.html';
     }

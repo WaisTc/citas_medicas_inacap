@@ -14,50 +14,50 @@ async function obtenerCitasPorCorreo() {
 
     const citas = await response.json();
 
-    
+
     const container = document.getElementById("citas-container");
     container.innerHTML = "";
 
     citas.forEach(cita => {
-        let fecha = "";
-        let hora = "";
-        let tipoCita = "";
-        let lugarAtencion = "";
+      let fecha = "";
+      let hora = "";
+      let tipoCita = "";
+      let lugarAtencion = "";
 
-        if (cita.fecha_hora) {
-            const fechaObj = new Date(cita.fecha_hora);
-            fecha = fechaObj.toLocaleDateString("es-CL", {
-            year: "numeric",
-            month: "2-digit",
-            day: "2-digit"
-            });
-            hora = fechaObj.toLocaleTimeString("es-CL", {
-            hour: "2-digit",
-            minute: "2-digit",
-            hour12: false
-            });
-        }
+      if (cita.fecha_hora) {
+        const fechaObj = new Date(cita.fecha_hora);
+        fecha = fechaObj.toLocaleDateString("es-CL", {
+          year: "numeric",
+          month: "2-digit",
+          day: "2-digit"
+        });
+        hora = fechaObj.toLocaleTimeString("es-CL", {
+          hour: "2-digit",
+          minute: "2-digit",
+          hour12: false
+        });
+      }
 
-        if (cita.estado_cita === "EN PROCESO" && !cita.fecha_hora) {
-            fecha = "sin fecha definida";
-            hora = "sin hora definida";
-            tipoCita = "Sin definir";
-            lugarAtencion = "Sin definir";
-        } else if (cita.estado_cita === "ACEPTADA") {
-            tipoCita = cita.tipo_cita;
-            lugarAtencion = cita.lugar_atencion;
-        } else {
-            tipoCita = cita.tipo_cita || "";
-            lugarAtencion = cita.lugar_atencion || "";
-        }
+      if (cita.estado_cita === "EN PROCESO" && !cita.fecha_hora) {
+        fecha = "sin fecha definida";
+        hora = "sin hora definida";
+        tipoCita = "Sin definir";
+        lugarAtencion = "Sin definir";
+      } else if (cita.estado_cita === "ACEPTADA") {
+        tipoCita = cita.tipo_cita;
+        lugarAtencion = cita.lugar_atencion;
+      } else {
+        tipoCita = cita.tipo_cita || "";
+        lugarAtencion = cita.lugar_atencion || "";
+      }
 
-        const card = document.createElement("div");
-        card.className = "card mb-3 shadow-sm";
+      const card = document.createElement("div");
+      card.className = "card mb-3 shadow-sm";
 
 
-        const citaData = encodeURIComponent(JSON.stringify(cita));
+      const citaData = encodeURIComponent(JSON.stringify(cita));
 
-        card.innerHTML = `
+      card.innerHTML = `
             <div class="card-header bg-primary text-white">
             <h5 class="mb-0">Cita #${cita.id_cita}</h5>
             </div>
@@ -76,7 +76,7 @@ async function obtenerCitasPorCorreo() {
             </div>
         `;
 
-    container.appendChild(card);
+      container.appendChild(card);
     });
   } catch (error) {
     console.error("Error al obtener citas:", error);
@@ -104,11 +104,11 @@ async function cancelarCita(citaJson) {
       body: JSON.stringify(cita)
     });
 
-    const data = await response.json(); 
+    const data = await response.json();
 
     if (response.ok && data.success) {
-      alert(data.message); 
-      obtenerCitasPorCorreo(); 
+      alert(data.message);
+      obtenerCitasPorCorreo();
     } else {
       alert(data.message || "No se pudo cancelar la cita");
     }

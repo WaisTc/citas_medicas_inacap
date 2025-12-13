@@ -29,6 +29,8 @@
           <li class="nav-item" id="horario"><a class="nav-link" href="horario.html">Horario</a></li>
           <li class="nav-item"><a class="nav-link" href="#">Contacto</a></li>
           <li class="nav-item" id="citasUser_"><a class="nav-link" href="citasUser.html">Mis Citas</a></li>
+          <li class="nav-item" id="adminPanel" style="display: none;"><a class="nav-link" href="admin.html"
+              style="color: #d63384; font-weight: bold;">Panel Admin</a></li>
 
           <!-- Acciones de Usuario -->
           <li class="nav-item ms-lg-3 d-flex align-items-center gap-2">
@@ -237,6 +239,10 @@
     if (rol == 1 || rol == null) {
       const elHorario = document.getElementById('horario');
       if (elHorario) elHorario.style.display = 'none';
+    }
+    if (rol == 3) {
+      const elAdmin = document.getElementById('adminPanel');
+      if (elAdmin) elAdmin.style.display = 'block';
     }
 
   </script>

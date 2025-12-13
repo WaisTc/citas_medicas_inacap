@@ -1,12 +1,14 @@
 const express = require('express');
 const router = express.Router();
 
-const { crearUsuario, loginUser, obtenerMedicos, obtenerDatosPorCorreo, 
-    cita_t_solicitud, cita_t_empleado, aceptar_solicitud, 
+const { crearUsuario, loginUser, obtenerMedicos, obtenerDatosPorCorreo,
+    cita_t_solicitud, cita_t_empleado, aceptar_solicitud,
     cita_aceptadas_empleado, citasDel_usuario, cancelar_citaU,
-    pelao
+    pelao, obtenerUsuarios, actualizarRol, borrarUsuario, obtenerRoles, actualizarInfoUser
 
 } = require('../controllers/usuarioController');
+
+
 
 
 router.post('/register', crearUsuario);
@@ -20,6 +22,12 @@ router.post('/empleado_c_aceptadas', cita_aceptadas_empleado)
 router.post('/citasD_usuario', citasDel_usuario)
 router.post('/cancelar_cita', cancelar_citaU)
 router.get('/pelao/:correo_user', pelao)
+router.get('/lista_usuarios', obtenerUsuarios);
+router.post('/actualizar_rol', actualizarRol);
+router.post('/eliminar_usuario', borrarUsuario);
+router.get('/roles', obtenerRoles);
+router.post('/actualizar_info', actualizarInfoUser);
+
 
 
 

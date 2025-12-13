@@ -159,7 +159,7 @@
   <script>
     const rol = sessionStorage.getItem('rol')
 
-    if (rol != 1) {
+    if (rol != 1 && rol != 3) {
       alert("Usuario no permitido. Debes iniciar sesión como paciente.")
       window.location.href = 'index.html';
     }

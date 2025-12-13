@@ -2,7 +2,7 @@ const pool = require('../config/db');
 
 async function getAllMedicos() {
     const [rows] = await pool.query(
-        'SELECT nombres, rut_empleado FROM empleado WHERE especialidad = ?',
+        'SELECT nombres, rut_persona AS rut_empleado FROM persona WHERE especialidad = ?',
         ['medico']
     );
     return rows;
@@ -10,7 +10,7 @@ async function getAllMedicos() {
 
 async function findEmpleadoByCorreo(correo) {
     const [rows] = await pool.execute(
-        'SELECT rut_empleado, correo FROM empleado WHERE correo = ?',
+        'SELECT rut_persona AS rut_empleado, correo FROM persona WHERE correo = ?',
         [correo]
     );
     return rows[0];
@@ -18,7 +18,7 @@ async function findEmpleadoByCorreo(correo) {
 
 async function findEmpleadoByRut(rut) {
     const [rows] = await pool.execute(
-        'SELECT correo FROM empleado WHERE rut_empleado = ?',
+        'SELECT correo FROM persona WHERE rut_persona = ?',
         [rut]
     );
     return rows[0];

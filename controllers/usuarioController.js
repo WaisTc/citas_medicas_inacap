@@ -8,6 +8,23 @@ const CitaService = require('../services/citaService');
 const crearUsuario = async (req, res) => {
   try {
     const datos = req.body;
+
+    // --- Validación de Seguridad ---
+    // Min 8 caracteres
+    if (!datos.password || datos.password.length < 8) {
+      return res.status(400).json({ error: 'La contraseña debe tener al menos 8 caracteres.' });
+    }
+
+    // Bloqueo de caracteres
+    const dangerousChars = /[\<\>\"\'\;]/;
+    const fieldsToCheck = [datos.nombre, datos.apellido1, datos.apellido2, datos.direccion, datos.plan_n, datos.plan_t];
+
+    for (const field of fieldsToCheck) {
+      if (field && dangerousChars.test(field)) {
+        return res.status(400).json({ error: 'Se detectaron caracteres no permitidos (<, >, ", \', ;) en los campos.' });
+      }
+    }
+
     const hash = await bcrypt.hash(datos.password, 10);
 
     await UsuarioModel.insertarUsuario({ ...datos, password: hash });
@@ -162,6 +179,60 @@ const cancelar_citaU = async (req, res) => {
   }
 };
 
+const obtenerUsuarios = async (req, res) => {
+  try {
+    const usuarios = await UsuarioModel.getAllUsuarios();
+    res.json(usuarios);
+  } catch (error) {
+    console.error('Error al obtener usuarios:', error);
+    res.status(500).json({ error: 'Error interno del servidor' });
+  }
+};
+
+const actualizarRol = async (req, res) => {
+  const { correo, nuevoRol } = req.body;
+  try {
+    await UsuarioModel.updateUsuarioRol(correo, nuevoRol);
+    res.json({ message: 'Rol actualizado correctamente' });
+  } catch (error) {
+    console.error('Error al actualizar rol:', error);
+    res.status(500).json({ error: 'Error interno del servidor' });
+  }
+};
+
+const borrarUsuario = async (req, res) => {
+  const { correo } = req.body;
+  try {
+    await UsuarioModel.deleteUsuario(correo);
+    res.json({ message: 'Usuario eliminado correctamente' });
+  } catch (error) {
+    console.error('Error al eliminar usuario:', error);
+    res.status(500).json({ error: 'Error interno del servidor' });
+  }
+};
+
+const obtenerRoles = async (req, res) => {
+  try {
+    const roles = await UsuarioModel.getAllRoles();
+    res.json(roles);
+  } catch (error) {
+    console.error('Error al obtener roles:', error);
+    res.status(500).json({ error: 'Error interno del servidor' });
+  }
+};
+
+const actualizarInfoUser = async (req, res) => {
+  const datos = req.body;
+  try {
+    // Requires new method in UsuarioModel
+    await UsuarioModel.updateUsuarioInfo(datos);
+    res.json({ message: 'Información actualizada' });
+  } catch (error) {
+    console.error('Error al actualizar info usuario:', error);
+    res.status(500).json({ error: 'Error interno del servidor' });
+  }
+};
+
 module.exports = {
   crearUsuario,
   loginUser,
@@ -173,5 +244,11 @@ module.exports = {
   cita_aceptadas_empleado,
   pelao,
   citasDel_usuario,
-  cancelar_citaU
+  cancelar_citaU,
+  obtenerUsuarios,
+  actualizarRol,
+  borrarUsuario,
+  obtenerRoles,
+  actualizarInfoUser
 };
+

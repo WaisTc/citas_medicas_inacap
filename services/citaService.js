@@ -46,15 +46,33 @@ async function getDashboardData(correo) {
 }
 
 async function getCitasUsuario(correo) {
-    const datosPaciente = await UsuarioModel.datosCorreo(correo);
-    if (!datosPaciente || datosPaciente.length === 0) return { temporales: [], aceptadas: [] };
+    const datosPersona = await UsuarioModel.datosCorreo(correo);
+    if (!datosPersona || datosPersona.length === 0) return { temporales: [], aceptadas: [] };
 
-    const rutPaciente = datosPaciente[0].rut_paciente;
+    const rutPersona = datosPersona[0].rut_persona;
 
-    const temporales = await CitaModel.findCitasTemporalesByPaciente(rutPaciente);
-    const aceptadas = await CitaModel.findCitasAceptadasByPaciente(rutPaciente);
+    // As Patient
+    const tempPaciente = await CitaModel.findCitasTemporalesByPaciente(rutPersona);
+    const acepPaciente = await CitaModel.findCitasAceptadasByPaciente(rutPersona);
 
-    return { temporales, aceptadas };
+    // As Medico (Even if not strictly a 'medico' role, checking just in case)
+    const tempMedico = await CitaModel.findCitasTemporalesByMedico(rutPersona); // Reuse existing model function
+    const acePMedico = await CitaModel.findCitasAceptadasByMedico(rutPersona);
+
+    // Merge arrays, tagging them optionally if needed, but for now just combining.
+    // We might want to avoid duplicates if someone is their own doctor (unlikely but possible in test data).
+    // But simple concat is fine for now; duplicates in DB shouldn't exist ideally.
+
+    // Note: The controller manually merges into a flat list, but expects {temporales, aceptadas} object structure to destructure.
+    // So we combine internal results back into a structure.
+
+    // Mark roles if helpful for frontend (admin)
+    const addRole = (arr, role) => arr.map(c => ({ ...c, rol_usuario: role }));
+
+    return {
+        temporales: [...addRole(tempPaciente, 'paciente'), ...addRole(tempMedico, 'medico')],
+        aceptadas: [...addRole(acepPaciente, 'paciente'), ...addRole(acePMedico, 'medico')]
+    };
 }
 
 async function cancelarCita(datos) {

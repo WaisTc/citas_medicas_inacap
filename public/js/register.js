@@ -1,5 +1,5 @@
 function validarRUT(rutCompleto) {
-  
+
   rutCompleto = rutCompleto.replace(/\./g, '').replace(/-/g, '').toUpperCase();
 
   const cuerpo = rutCompleto.slice(0, -1);
@@ -26,7 +26,7 @@ function validarRUT(rutCompleto) {
 }
 
 
-document.getElementById('formulario-user').addEventListener('submit', async function(e) {
+document.getElementById('formulario-user').addEventListener('submit', async function (e) {
   e.preventDefault();
   const form = e.target;
   const datos = {
@@ -43,13 +43,13 @@ document.getElementById('formulario-user').addEventListener('submit', async func
     password: form.contraseña.value,
     confirmar: form.confirmarContraseña.value
   };
-  
+
   if (!validarRUT(datos.rut)) {
     alert("El RUT ingresado no es válido.");
     return;
   }
 
-  if(datos.password !== datos.confirmar){
+  if (datos.password !== datos.confirmar) {
     return alert("Las contraseñas no coinciden.")
   }
   else {
@@ -60,6 +60,12 @@ document.getElementById('formulario-user').addEventListener('submit', async func
     });
 
     const resultado = await res.json();
-    console.log(resultado);
+
+    if (res.ok) {
+      alert("Usuario registrado correctamente");
+      window.location.href = 'index.html';
+    } else {
+      alert("Error: " + (resultado.error || "No se pudo registrar"));
+    }
   }
 });
