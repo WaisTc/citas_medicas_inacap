@@ -53,7 +53,7 @@ document.getElementById('formulario-user').addEventListener('submit', async func
     return alert("Las contraseñas no coinciden.")
   }
   else {
-    const res = await fetch('http://localhost:3000/api/usuario/register', {
+    const res = await fetch('/api/usuario/register', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(datos)

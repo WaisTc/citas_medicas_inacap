@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 async function loadRoles() {
     try {
-        const response = await fetch('http://localhost:3000/api/usuario/roles');
+        const response = await fetch('/api/usuario/roles');
         if (!response.ok) throw new Error('Error al cargar roles');
         availableRoles = await response.json();
 
@@ -44,7 +44,7 @@ async function loadRoles() {
 
 async function loadUsuarios() {
     try {
-        const response = await fetch('http://localhost:3000/api/usuario/lista_usuarios');
+        const response = await fetch('/api/usuario/lista_usuarios');
         if (!response.ok) throw new Error('Error al cargar usuarios');
         const usuarios = await response.json();
 
@@ -115,7 +115,7 @@ async function handleEditFormSubmit(e) {
     const nuevoRol = document.getElementById('selectRol').value;
 
     try {
-        const response = await fetch('http://localhost:3000/api/usuario/actualizar_rol', {
+        const response = await fetch('/api/usuario/actualizar_rol', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ correo, nuevoRol })
@@ -145,7 +145,7 @@ async function deleteUser(correo) {
     }
 
     try {
-        const response = await fetch('http://localhost:3000/api/usuario/eliminar_usuario', {
+        const response = await fetch('/api/usuario/eliminar_usuario', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ correo })
@@ -173,7 +173,7 @@ async function openDetalleModal(correo) {
 
     // 1. Fetch User Data
     try {
-        const response = await fetch(`http://localhost:3000/api/usuario/paciente_datos/${correo}`);
+        const response = await fetch(`/api/usuario/paciente_datos/${correo}`);
         if (!response.ok) throw new Error("Error al obtener datos usuario");
         const data = await response.json();
 
@@ -200,7 +200,7 @@ async function openDetalleModal(correo) {
 
 async function loadUserHistory(correo) {
     try {
-        const response = await fetch('http://localhost:3000/api/usuario/citasD_usuario', {
+        const response = await fetch('/api/usuario/citasD_usuario', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ correo: correo })
@@ -304,7 +304,7 @@ document.getElementById('formEditarUsuario').addEventListener('submit', async (e
     };
 
     try {
-        const response = await fetch('http://localhost:3000/api/usuario/actualizar_info', {
+        const response = await fetch('/api/usuario/actualizar_info', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(payload)

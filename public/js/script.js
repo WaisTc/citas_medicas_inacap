@@ -38,7 +38,7 @@ document.getElementById("Login").addEventListener("submit", async function (e) {
   };
 
   try {
-    const res = await fetch('http://localhost:3000/api/usuario/login', {
+    const res = await fetch('/api/usuario/login', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(credenciales)

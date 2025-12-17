@@ -2,7 +2,7 @@ async function obtenerCitasPorCorreo() {
   const correo = sessionStorage.getItem("correo_user");
 
   try {
-    const response = await fetch("http://localhost:3000/api/usuario/citasD_usuario", {
+    const response = await fetch("/api/usuario/citasD_usuario", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ correo })
@@ -98,7 +98,7 @@ async function cancelarCita(citaJson) {
   if (!confirm(`¿Seguro que deseas cancelar la cita #${cita.id_cita}?`)) return;
 
   try {
-    const response = await fetch("http://localhost:3000/api/usuario/cancelar_cita", {
+    const response = await fetch("/api/usuario/cancelar_cita", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(cita)

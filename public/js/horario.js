@@ -172,7 +172,7 @@ async function aceptarCita(boton) {
   const cita = { id_cita, fecha_cita, lugar_atencion, tipo_cita, rut, fecha, hora };
 
   try {
-    const res = await fetch('http://localhost:3000/api/usuario/aceptar', {
+    const res = await fetch('/api/usuario/aceptar', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(cita)
@@ -197,7 +197,7 @@ async function aceptarCita(boton) {
 async function cargarCitasAceptadas() {
   const correo = sessionStorage.getItem('correo_user');
   try {
-    const res = await fetch('http://localhost:3000/api/usuario/empleado_c_aceptadas', {
+    const res = await fetch('/api/usuario/empleado_c_aceptadas', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ correo })
@@ -236,7 +236,7 @@ async function cargarCitasAceptadas() {
 async function cargarCitasTemporales() {
   const correo = sessionStorage.getItem('correo_user');
   try {
-    const res = await fetch('http://localhost:3000/api/usuario/empleado_temporal', {
+    const res = await fetch('/api/usuario/empleado_temporal', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ correo })
@@ -269,7 +269,7 @@ window.addEventListener('DOMContentLoaded', async () => {
 async function grafico_p() {
   const c = sessionStorage.getItem("correo_user");
 
-  const res = await fetch(`http://localhost:3000/api/usuario/pelao/${c}`);
+  const res = await fetch(`/api/usuario/pelao/${c}`);
   const data = await res.json();
 
 
@@ -384,7 +384,7 @@ async function rechazarCita(id_cita) {
   if (!confirmar) return;
 
   try {
-    const res = await fetch("http://localhost:3000/api/usuario/cancelar_cita", {
+    const res = await fetch("/api/usuario/cancelar_cita", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(cita)
