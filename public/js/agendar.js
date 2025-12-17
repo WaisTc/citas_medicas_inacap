@@ -16,7 +16,7 @@ document.getElementById('paciente-form').addEventListener('submit', async functi
     doctor: form.doctor_select.value
   };
 
-  fetch('http://localhost:3000/api/usuario/cita_t', {
+  fetch('/api/usuario/cita_t', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
