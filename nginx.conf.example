@@ -1,0 +1,22 @@
+server {
+    listen 80;
+    server_name tu_dominio.com www.tu_dominio.com; # O la IP de tu servidor AWS
+
+    # Redirigir tráfico al servidor de Node.js
+    location / {
+        proxy_pass http://localhost:3000; # Tu app corre en el puerto 3000
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_cache_bypass $http_upgrade;
+    }
+
+    # Opcional: Servir archivos estáticos directamente con Nginx para mejor rendimiento
+    # location /css {
+    #     root /var/www/tu_proyecto/public;
+    # }
+    # location /js {
+    #     root /var/www/tu_proyecto/public;
+    # }
+}
