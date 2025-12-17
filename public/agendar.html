@@ -251,7 +251,7 @@
   </script>
 
   <script>
-    fetch('http://localhost:3000/api/usuario/medicos')
+    fetch('/api/usuario/medicos')
       .then(response => {
         if (!response.ok) throw new Error('Error en la respuesta del servidor');
         return response.json();
@@ -275,7 +275,7 @@
   <script>
     const c = sessionStorage.getItem("correo_user");
     if (c) {
-      fetch(`http://localhost:3000/api/usuario/paciente_datos/${c}`)
+      fetch(`/api/usuario/paciente_datos/${c}`)
         .then(res => {
           if (!res.ok) throw new Error("No se pudo obtener los datos");
           return res.json();
