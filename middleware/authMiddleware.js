@@ -12,7 +12,9 @@ const verifyToken = (req, res, next) => {
         req.user = verified;
         next();
     } catch (error) {
-        res.status(400).json({ error: 'Token no válido' });
+        // Clear the invalid cookie
+        res.clearCookie('token');
+        res.status(401).json({ error: 'Token no válido o expirado' });
     }
 };
 

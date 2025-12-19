@@ -249,7 +249,10 @@
           window.currentUser = data.user;
           sessionStorage.setItem('isLoggedIn', 'true');
         } else {
+          // If 401 Unauthorized, it means cookie is missing or invalid.
+          // Clean up session storage just in case.
           sessionStorage.removeItem('isLoggedIn');
+          // Do NOT treat as a console error, it's a normal state for anonymous users.
         }
       } catch (e) {
         console.error(e);
