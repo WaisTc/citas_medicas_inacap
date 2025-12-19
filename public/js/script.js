@@ -30,7 +30,9 @@ function botonQ() {
 
 
 // Global Logout Modal
-function mostrarLogoutModal() {
+// Global Logout Modal
+console.log("script.js loaded");
+window.mostrarLogoutModal = function () {
   let modalHtml = document.getElementById('logoutModal');
   if (!modalHtml) {
     const modalDiv = document.createElement('div');
