@@ -48,7 +48,7 @@ async function findCitasTemporalesByPaciente(rutPaciente) {
 }
 
 async function findCitasAceptadasByPaciente(rutPaciente) {
-    const [rows] = await pool.execute("SELECT * FROM cita WHERE rut_paciente = ? AND fecha_hora >= NOW()", [rutPaciente]);
+    const [rows] = await pool.execute("SELECT * FROM cita WHERE rut_paciente = ?", [rutPaciente]);
     return rows;
 }
 

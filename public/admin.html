@@ -248,31 +248,29 @@
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/script.js"></script>
     <script src="js/admin.js"></script>
 
     <script>
-
-
-
-
-
         const btnPerfil = document.getElementById('perfil');
         if (btnPerfil) {
             btnPerfil.style.display = 'block';
             btnPerfil.addEventListener('click', () => {
-                mostrarLogoutModal();
+                if (typeof mostrarLogoutModal === 'function') {
+                    mostrarLogoutModal();
+                } else {
+                    console.error('mostrarLogoutModal is not defined');
+                }
             });
         }
 
-        const userMail = sessionStorage.getItem('correo_user')
+        const userMail = sessionStorage.getItem('correo_user');
         const mailSpan = document.getElementById("user-email");
         if (userMail && mailSpan) {
             mailSpan.textContent = userMail;
             mailSpan.style.display = "inline";
         }
     </script>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>

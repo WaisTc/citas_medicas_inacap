@@ -19,6 +19,7 @@ router.get('/me', verifyToken, myself);
 router.get('/medicos', obtenerMedicos); // Public for carousel
 router.post('/cita_t', verifyToken, cita_t_solicitud);
 router.get('/paciente_datos', verifyToken, obtenerDatosPorCorreo);
+router.get('/paciente_datos/:correo', verifyToken, obtenerDatosPorCorreo);
 router.post('/empleado_temporal', verifyToken, cita_t_empleado)
 router.post('/aceptar', verifyToken, aceptar_solicitud)
 router.post('/empleado_c_aceptadas', verifyToken, cita_aceptadas_empleado)

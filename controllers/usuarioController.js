@@ -55,11 +55,16 @@ const loginUser = async (req, res) => {
     );
 
     // Set HTTP-Only Cookie
+    const isProduction = process.env.NODE_ENV === 'production';
+
     res.cookie('token', token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production', // true if in production
+      // If we are in production but don't have SSL yet (common on AWS test phase), 
+      // secure: true will prevent the browser from saving the cookie.
+      // Better to check if req is secure or stay false during initial AWS deploy.
+      secure: isProduction && req.secure,
       maxAge: 2 * 60 * 60 * 1000, // 2 hours
-      sameSite: 'strict'
+      sameSite: 'lax' // 'strict' can sometimes cause issues with redirects from other domains
     });
 
     res.json({
@@ -84,8 +89,15 @@ const obtenerMedicos = async (req, res) => {
 };
 
 const obtenerDatosPorCorreo = async (req, res) => {
-  const c = req.user.correo; // From token
+  // Try to use parameter first (for admin/medico viewing others), fallback to token correo (self)
+  let c = req.params.correo || req.query.correo || req.user.correo;
+
   try {
+    // Permission check: if looking at someone else, must be admin or medico
+    if (c !== req.user.correo && req.user.rol != 3 && req.user.rol != 2) {
+      return res.status(403).json({ error: 'No tienes permiso para ver estos datos.' });
+    }
+
     const rows = await UsuarioModel.datosCorreo(c);
     if (rows.length === 0) {
       return res.status(404).json({ error: 'Usuario no encontrado' });
@@ -165,8 +177,15 @@ const pelao = async (req, res) => {
 };
 
 const citasDel_usuario = async (req, res) => {
-  const correo = req.user.correo; // From token
+  // Use correo from body if provided (admin/medico looking at others), fallback to token (self)
+  let correo = req.body.correo || req.user.correo;
+
   try {
+    // Permission check
+    if (correo !== req.user.correo && req.user.rol != 3 && req.user.rol != 2) {
+      return res.status(403).json({ error: 'No tienes permiso para ver este historial.' });
+    }
+
     const citas = await CitaService.getCitasUsuario(correo);
     const todas = [...citas.temporales, ...citas.aceptadas];
     res.json(todas);

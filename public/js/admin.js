@@ -180,20 +180,33 @@ async function openDetalleModal(correo) {
         // Populate Personal Info Tab
         document.getElementById('det_rut').value = data.rut_persona || '';
         document.getElementById('det_nombres').value = data.nombres || '';
-        document.getElementById('det_apellidos').value = (data.primer_apellido || '') + ' ' + (data.segundo_apellido || '');
+
+        // Handle splitting or showing full names
+        const apellidos = (data.primer_apellido || '') + (data.segundo_apellido ? ' ' + data.segundo_apellido : '');
+        document.getElementById('det_apellidos').value = apellidos;
+
         document.getElementById('det_correo').value = data.correo || '';
         document.getElementById('det_telefono').value = data.telefono || '';
         document.getElementById('det_direccion').value = data.direccion || '';
 
+        // Reset tabs to show the first one (Personal Info)
+        const infoTab = document.getElementById('info-tab');
+        if (infoTab) {
+            const tabInstance = bootstrap.Tab.getOrCreateInstance(infoTab);
+            tabInstance.show();
+        }
+
         // Show Modal
-        const modal = new bootstrap.Modal(document.getElementById('detalleUsuarioModal'));
+        const modalEl = document.getElementById('detalleUsuarioModal');
+        const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
         modal.show();
 
         // 2. Fetch History
+        console.log("Fetching history for:", correo);
         loadUserHistory(correo);
 
     } catch (e) {
-        console.error(e);
+        console.error("Error in openDetalleModal:", e);
         alert("No se pudo cargar la información del usuario.");
     }
 }
@@ -208,38 +221,34 @@ async function loadUserHistory(correo) {
 
         if (response.ok) {
             const data = await response.json();
-
-            // The API returns a flat array of all appointments (mixed temp and accepted)
-            // We need to normalize them.
-            // Assumption: 'cita' table has fecha_hora, 'cita_temporal' likely doesn't or it's different.
-            // Check properties to distinguish or trust 'estado_cita'.
+            console.log("History data received:", data);
 
             currentHistory = data.map(c => {
-                let tipo = 'Desconocido';
+                let tipo = c.tipo_cita || 'General';
+                let subTipo = c.rol_usuario === 'medico' ? 'Como Médico' : 'Como Paciente';
                 let fecha = c.fecha_hora || 'Pendiente';
                 let estado = c.estado_cita || 'Desconocido';
 
-                // Determine type based on state or presence of date
+                // Determine logic status
                 if (estado === 'EN PROCESO' || !c.fecha_hora) {
-                    tipo = 'Temporal';
-                    estado = 'En Proceso';
-                } else {
-                    tipo = 'Confirmada';
+                    estado = 'Pendiente';
                 }
 
                 return {
                     ...c,
                     estado: estado,
-                    tipo: tipo,
+                    tipo: `${tipo} (${subTipo})`,
                     fecha: fecha
                 };
             });
 
             renderHistory(currentHistory);
+        } else {
+            console.error("Failed to fetch history:", response.status);
         }
 
     } catch (e) {
-        console.error(e);
+        console.error("Error in loadUserHistory:", e);
     }
 }
 
@@ -255,12 +264,15 @@ function renderHistory(lista) {
             dateStr = new Date(dateStr).toLocaleString();
         }
 
+        // Determine ID for the row (it's either id_cita or id_cita_temporal depending on DB)
+        const idCita = cita.id_cita || 'N/A';
+
         tr.innerHTML = `
             <td>${dateStr}</td>
             <td>${cita.rut_paciente || 'N/A'}</td>
             <td>${cita.rut_medico || 'N/A'}</td>
             <td><span class="badge ${cita.estado === 'Aceptada' || cita.estado === 'Confirmada' ? 'bg-success' : 'bg-warning'}">${cita.estado}</span></td>
-            <td>${cita.tipo}</td>
+            <td>${cita.tipo} (ID: ${idCita})</td>
         `;
         tbody.appendChild(tr);
     });

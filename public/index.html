@@ -218,7 +218,11 @@
           if (btnPerfil) {
             btnPerfil.style.display = 'block';
             btnPerfil.addEventListener('click', () => {
-              mostrarLogoutModal();
+              if (typeof mostrarLogoutModal === 'function') {
+                mostrarLogoutModal();
+              } else {
+                console.error('mostrarLogoutModal is not defined');
+              }
             });
           }
 
