@@ -1,11 +1,10 @@
 async function obtenerCitasPorCorreo() {
-  const correo = sessionStorage.getItem("correo_user");
 
   try {
     const response = await fetch("/api/usuario/citasD_usuario", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ correo })
+      // Body not needed as user is inferred from token
     });
 
     if (!response.ok) {

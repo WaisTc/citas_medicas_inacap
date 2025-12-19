@@ -9,6 +9,11 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
   <link rel="stylesheet" href="css/styles.css">
   <script src="https://kit.fontawesome.com/0b464b9606.js" crossorigin="anonymous"></script>
+  <script>
+    if (sessionStorage.getItem('isLoggedIn')) {
+      window.location.href = 'index.html';
+    }
+  </script>
 </head>
 
 <body>

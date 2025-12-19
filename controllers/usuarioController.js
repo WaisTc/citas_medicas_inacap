@@ -54,8 +54,16 @@ const loginUser = async (req, res) => {
       { expiresIn: '2h' }
     );
 
+    // Set HTTP-Only Cookie
+    res.cookie('token', token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production', // true if in production
+      maxAge: 2 * 60 * 60 * 1000, // 2 hours
+      sameSite: 'strict'
+    });
+
     res.json({
-      token,
+      success: true,
       correo: credenciales.user,
       rol: datos_us.rol
     });
@@ -76,7 +84,7 @@ const obtenerMedicos = async (req, res) => {
 };
 
 const obtenerDatosPorCorreo = async (req, res) => {
-  const c = req.params.correo_user;
+  const c = req.user.correo; // From token
   try {
     const rows = await UsuarioModel.datosCorreo(c);
     if (rows.length === 0) {
@@ -91,6 +99,11 @@ const obtenerDatosPorCorreo = async (req, res) => {
 
 const cita_t_solicitud = async (req, res) => {
   const datos = req.body;
+  // Security: Ensure the appointment is made for the logged-in user if not specified or override?
+  // For now we assume the form data is correct, but users can tamper.
+  // Ideally: datos.correo = req.user.correo;
+  datos.correo = req.user.correo;
+
   try {
     await CitaModel.createCitaTemporal(datos);
     return res.status(201).json({ mensaje: 'Solicitud procesada correctamente' });
@@ -101,7 +114,7 @@ const cita_t_solicitud = async (req, res) => {
 };
 
 const cita_t_empleado = async (req, res) => {
-  const { correo } = req.body;
+  const correo = req.user.correo; // From token
   try {
     const citas = await CitaService.getCitasTemporalesForEmpleado(correo);
     if (!citas || citas.length === 0) {
@@ -115,7 +128,7 @@ const cita_t_empleado = async (req, res) => {
 };
 
 const cita_aceptadas_empleado = async (req, res) => {
-  const { correo } = req.body;
+  const correo = req.user.correo; // From token
   try {
     const citas = await CitaService.getCitasAceptadasForEmpleado(correo);
     if (citas.length === 0) {
@@ -141,7 +154,7 @@ const aceptar_solicitud = async (req, res) => {
 };
 
 const pelao = async (req, res) => {
-  const c = req.params.correo_user;
+  const c = req.user.correo; // From token
   try {
     const resultado = await CitaService.getDashboardData(c);
     return res.json(resultado);
@@ -152,7 +165,7 @@ const pelao = async (req, res) => {
 };
 
 const citasDel_usuario = async (req, res) => {
-  const { correo } = req.body;
+  const correo = req.user.correo; // From token
   try {
     const citas = await CitaService.getCitasUsuario(correo);
     const todas = [...citas.temporales, ...citas.aceptadas];
@@ -233,9 +246,27 @@ const actualizarInfoUser = async (req, res) => {
   }
 };
 
+const logoutUser = (req, res) => {
+  res.clearCookie('token');
+  res.json({ message: 'Sesión cerrada correctamente' });
+};
+
+const myself = (req, res) => {
+  // req.user is populated by verifyToken middleware
+  res.json({
+    success: true,
+    user: {
+      correo: req.user.correo,
+      rol: req.user.rol
+    }
+  });
+};
+
 module.exports = {
   crearUsuario,
   loginUser,
+  logoutUser,
+  myself,
   obtenerMedicos,
   obtenerDatosPorCorreo,
   cita_t_empleado,

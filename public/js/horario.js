@@ -195,12 +195,11 @@ async function aceptarCita(boton) {
 
 // ==================== CARGAR CITAS ACEPTADAS ====================
 async function cargarCitasAceptadas() {
-  const correo = sessionStorage.getItem('correo_user');
   try {
     const res = await fetch('/api/usuario/empleado_c_aceptadas', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ correo })
+      // No body needed
     });
     const data = await res.json();
 
@@ -234,12 +233,11 @@ async function cargarCitasAceptadas() {
 
 // ==================== CARGAR CITAS TEMPORALES ====================
 async function cargarCitasTemporales() {
-  const correo = sessionStorage.getItem('correo_user');
   try {
     const res = await fetch('/api/usuario/empleado_temporal', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ correo })
+      // No body needed
     });
     const data = await res.json();
 
@@ -267,9 +265,7 @@ window.addEventListener('DOMContentLoaded', async () => {
 
 // ==================== GRAFICO QUE TENGO QUE CAMBIAR ====================
 async function grafico_p() {
-  const c = sessionStorage.getItem("correo_user");
-
-  const res = await fetch(`/api/usuario/pelao/${c}`);
+  const res = await fetch(`/api/usuario/pelao`); // No params
   const data = await res.json();
 
 

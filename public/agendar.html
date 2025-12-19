@@ -8,7 +8,40 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
   <link rel="stylesheet" href="css/styles.css">
+  <style>
+    body {
+      display: none;
+    }
+  </style>
   <script src="https://kit.fontawesome.com/0b464b9606.js" crossorigin="anonymous"></script>
+  <script src="js/roles.js"></script>
+  <script>
+    (async function checkAuth() {
+      try {
+        const res = await fetch('/api/usuario/me');
+        if (!res.ok) {
+          // Not logged in
+          window.location.href = 'index.html';
+          return;
+        }
+        const data = await res.json();
+
+        if (data.user.rol == UserRoles.MEDICO) {
+          alert("Acceso denegado: Los médicos no pueden agendar citas como pacientes.");
+          window.location.href = 'index.html';
+          return;
+        }
+
+        // Expose globally for other scripts
+        window.currentUser = data.user;
+        sessionStorage.setItem('isLoggedIn', 'true');
+        document.body.style.display = 'block'; // Show page
+
+      } catch (err) {
+        window.location.href = 'index.html';
+      }
+    })();
+  </script>
 </head>
 
 <body>
@@ -36,8 +69,8 @@
               <i class="fa-solid fa-user"></i>
             </button>
 
-            <button class="user-button" style="background: #2ecc71; color: white; border-color: #2ecc71;" id="perfil"
-              title="Cerrar Sesión">
+            <button class="user-button" style="background: #2ecc71; color: white; border-color: #2ecc71; display: none;"
+              id="perfil" title="Cerrar Sesión">
               <i class="fa-solid fa-user-check"></i>
             </button>
           </li>
@@ -219,15 +252,7 @@
   <script src="js/agendar.js"></script>
 
   <script>
-    const token = sessionStorage.getItem('token');
-    const rol = sessionStorage.getItem('rol')
-
-    if (rol == 2) {
-      alert("Acceso denegado: Los médicos no pueden agendar citas como pacientes.")
-      window.location.href = 'index.html';
-    }
-
-    if (token) {
+    if (sessionStorage.getItem('isLoggedIn')) {
       // Desabilitar boton inicio de sesion
       const btnDisplay = document.getElementById('user-button-display');
       if (btnDisplay) btnDisplay.style.display = 'none';
@@ -235,18 +260,11 @@
       // Cerrar sesion
       const btnPerfil = document.getElementById('perfil');
       if (btnPerfil) {
+        btnPerfil.style.display = 'block';
         btnPerfil.addEventListener('click', () => {
-          sessionStorage.removeItem('token');
-          sessionStorage.removeItem('correo_user');
-          sessionStorage.removeItem('rol');
-          alert("Cerrando sesión...")
-          window.location.href = 'index.html';
+          mostrarLogoutModal();
         });
       }
-    }
-    else {
-      alert("Debes iniciar sesión para agendar una cita.")
-      window.location.href = 'index.html';
     }
   </script>
 
@@ -273,33 +291,31 @@
   </script>
 
   <script>
-    const c = sessionStorage.getItem("correo_user");
-    if (c) {
-      fetch(`/api/usuario/paciente_datos/${c}`)
-        .then(res => {
-          if (!res.ok) throw new Error("No se pudo obtener los datos");
-          return res.json();
-        })
-        .then(data => {
-          document.getElementById("rut").value = data.rut_persona || "";
-          document.getElementById("nombres").value = data.nombres || "";
-          document.getElementById("segundo_apellido").value = data.segundo_apellido || "";
-          document.getElementById("primer_apellido").value = data.primer_apellido || "";
-          document.getElementById("correo").value = data.correo || "";
-          document.getElementById("telefono").value = data.telefono || "";
-          document.getElementById("direccion").value = data.direccion || "";
+    // Load User Data based on token (inferred by server)
+    fetch(`/api/usuario/paciente_datos`)
+      .then(res => {
+        if (!res.ok) throw new Error("No se pudo obtener los datos");
+        return res.json();
+      })
+      .then(data => {
+        document.getElementById("rut").value = data.rut_persona || "";
+        document.getElementById("nombres").value = data.nombres || "";
+        document.getElementById("segundo_apellido").value = data.segundo_apellido || "";
+        document.getElementById("primer_apellido").value = data.primer_apellido || "";
+        document.getElementById("correo").value = data.correo || "";
+        document.getElementById("telefono").value = data.telefono || "";
+        document.getElementById("direccion").value = data.direccion || "";
 
-          if (data.fecha_nacimiento) {
-            const fechaCruda = data.fecha_nacimiento;
-            const fechaFormateada = fechaCruda.split('T')[0];
-            document.getElementById("fecha_nacimiento").value = fechaFormateada;
-          }
+        if (data.fecha_nacimiento) {
+          const fechaCruda = data.fecha_nacimiento;
+          const fechaFormateada = fechaCruda.split('T')[0];
+          document.getElementById("fecha_nacimiento").value = fechaFormateada;
+        }
 
-          document.getElementById("plan_salud_nombre").value = data.plan_salud_nombre || "";
-          document.getElementById("plan_salud_tipo").value = data.plan_salud_tipo || "";
-        })
-        .catch(err => console.error("Error al cargar datos del usuario:", err));
-    }
+        document.getElementById("plan_salud_nombre").value = data.plan_salud_nombre || "";
+        document.getElementById("plan_salud_tipo").value = data.plan_salud_tipo || "";
+      })
+      .catch(err => console.error("Error al cargar datos del usuario:", err));
   </script>
 
   <script>
@@ -314,6 +330,7 @@
     }
   </script>
 
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>
