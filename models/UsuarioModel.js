@@ -1,46 +1,48 @@
 const pool = require('../config/db');
 
 async function insertarUsuario(datos) {
-    // Get default especialidad for role 1
-    const [rowsRol] = await pool.query('SELECT especialidad FROM rol_especialidad WHERE rol = ?', [1]);
-    const especialidad = rowsRol.length > 0 ? rowsRol[0].especialidad : 'paciente';
+    const connection = await pool.getConnection();
+    try {
+        await connection.beginTransaction();
 
-    const sql_persona = `
-    INSERT INTO persona (rut_persona, nombres, primer_apellido, 
-    segundo_apellido, correo, telefono, direccion, fecha_nacimiento, rol, especialidad, plan_salud_nombre, plan_salud_tipo) 
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, 1, ?, ?, ?);
-  `;
-    const valores_persona = [datos.rut, datos.nombre, datos.apellido1, datos.apellido2,
-    datos.correo, datos.telefono, datos.direccion, datos.nacimiento, especialidad, datos.plan_n, datos.plan_t];
-    await pool.execute(sql_persona, valores_persona);
+        const [rowsRol] = await connection.query('SELECT especialidad FROM rol_especialidad WHERE rol = ?', [1]);
+        const especialidad = rowsRol.length > 0 ? rowsRol[0].especialidad : 'paciente';
 
-    const usuario_login = 'INSERT INTO usuario(usuario, contraseña, rol) VALUES(?, ?, 1)'
-    const valores_login = [datos.correo, datos.password]
-    await pool.execute(usuario_login, valores_login);
+        const sql_persona = `
+            INSERT INTO persona (rut_persona, nombres, primer_apellido, 
+            segundo_apellido, correo, telefono, direccion, fecha_nacimiento, rol, especialidad, plan_salud_nombre, plan_salud_tipo) 
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, 1, ?, ?, ?);
+        `;
+        const valores_persona = [datos.rut, datos.nombre, datos.apellido1, datos.apellido2,
+        datos.correo, datos.telefono, datos.direccion, datos.nacimiento, especialidad, datos.plan_n, datos.plan_t];
+        await connection.execute(sql_persona, valores_persona);
+
+        const usuario_login = 'INSERT INTO usuario(usuario, contraseña, rol) VALUES(?, ?, 1)';
+        const valores_login = [datos.correo, datos.password];
+        await connection.execute(usuario_login, valores_login);
+
+        await connection.commit();
+    } catch (error) {
+        await connection.rollback();
+        throw error;
+    } finally {
+        connection.release();
+    }
 }
 
 async function validar(user) {
-    const [resultado_correo] = await pool.execute(
-        'SELECT COUNT(*) AS total FROM usuario WHERE usuario = ?',
+    const [rows] = await pool.execute(
+        'SELECT contraseña, rol FROM usuario WHERE usuario = ?',
         [user]
     );
 
-    const existe = resultado_correo[0].total > 0;
-
-    if (existe) {
-        const [rows] = await pool.execute(
-            'SELECT contraseña, rol FROM usuario WHERE usuario = ?',
-            [user]
-        );
-
-        const hashGuardado = rows[0].contraseña;
-        const rol = rows[0].rol;
-
-        return { hashGuardado, rol };
+    if (rows.length > 0) {
+        return {
+            hashGuardado: rows[0].contraseña,
+            rol: rows[0].rol
+        };
     }
-    else {
-        return null;
-    }
+    return null;
 }
 
 async function findEmailByRut(rut) {
@@ -63,22 +65,42 @@ async function getAllUsuarios() {
 }
 
 async function updateUsuarioRol(correo, nuevoRol) {
-    await pool.execute('UPDATE usuario SET rol = ? WHERE usuario = ?', [nuevoRol, correo]);
+    const connection = await pool.getConnection();
+    try {
+        await connection.beginTransaction();
 
-    const [rowsRol] = await pool.query('SELECT especialidad FROM rol_especialidad WHERE rol = ?', [nuevoRol]);
+        await connection.execute('UPDATE usuario SET rol = ? WHERE usuario = ?', [nuevoRol, correo]);
 
-    if (rowsRol.length === 0) {
-        throw new Error('Rol no encontrado en rol_especialidad');
+        const [rowsRol] = await connection.query('SELECT especialidad FROM rol_especialidad WHERE rol = ?', [nuevoRol]);
+        if (rowsRol.length === 0) throw new Error('Rol no encontrado');
+
+        const especialidad = rowsRol[0].especialidad;
+        await connection.execute('UPDATE persona SET rol = ?, especialidad = ? WHERE correo = ?', [nuevoRol, especialidad, correo]);
+
+        await connection.commit();
+    } catch (error) {
+        await connection.rollback();
+        throw error;
+    } finally {
+        connection.release();
     }
-    const especialidad = rowsRol[0].especialidad;
-
-    await pool.execute('UPDATE persona SET rol = ?, especialidad = ? WHERE correo = ?', [nuevoRol, especialidad, correo]);
 }
 
 async function deleteUsuario(correo) {
-    await pool.execute('DELETE FROM persona WHERE correo = ?', [correo]);
+    const connection = await pool.getConnection();
+    try {
+        await connection.beginTransaction();
 
-    await pool.execute('DELETE FROM usuario WHERE usuario = ?', [correo]);
+        await connection.execute('DELETE FROM persona WHERE correo = ?', [correo]);
+        await connection.execute('DELETE FROM usuario WHERE usuario = ?', [correo]);
+
+        await connection.commit();
+    } catch (error) {
+        await connection.rollback();
+        throw error;
+    } finally {
+        connection.release();
+    }
 }
 
 async function getAllRoles() {

@@ -225,6 +225,8 @@ async function cargarCitasAceptadas() {
       contenedor_aceptado.innerHTML = '<p>No hay citas asignadas.</p>';
     }
 
+    // Initialize chart with years and current year data
+    await cargarAniosDisponibles();
     grafico_p();
   } catch (error) {
     console.error('Error al obtener citas aceptadas:', error);
@@ -264,8 +266,38 @@ window.addEventListener('DOMContentLoaded', async () => {
 
 
 // ==================== GRAFICO QUE TENGO QUE CAMBIAR ====================
-async function grafico_p() {
-  const res = await fetch(`/api/usuario/pelao`); // No params
+async function cargarAniosDisponibles() {
+  try {
+    const res = await fetch('/api/usuario/anios');
+    const anios = await res.json();
+    const selector = document.getElementById('filtroAnio');
+
+    selector.innerHTML = '';
+    const currentYear = new Date().getFullYear();
+
+    // Ensure current year is at least an option if list is empty
+    const uniqueAnios = [...new Set([currentYear, ...anios])].sort((a, b) => b - a);
+
+    uniqueAnios.forEach(anio => {
+      const option = document.createElement('option');
+      option.value = anio;
+      option.textContent = anio;
+      if (anio === currentYear) option.selected = true;
+      selector.appendChild(option);
+    });
+  } catch (e) {
+    console.error("Error al cargar años:", e);
+  }
+}
+
+async function actualizarGraficoPorAnio() {
+  const anio = document.getElementById('filtroAnio').value;
+  grafico_p(anio);
+}
+
+async function grafico_p(anio) {
+  const targetYear = anio || new Date().getFullYear();
+  const res = await fetch(`/api/usuario/pelao?anio=${targetYear}`);
   const data = await res.json();
 
 

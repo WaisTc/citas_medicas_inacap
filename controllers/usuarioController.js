@@ -167,12 +167,24 @@ const aceptar_solicitud = async (req, res) => {
 
 const pelao = async (req, res) => {
   const c = req.user.correo; // From token
+  const anio = req.query.anio;
   try {
-    const resultado = await CitaService.getDashboardData(c);
+    const resultado = await CitaService.getDashboardData(c, anio);
     return res.json(resultado);
   } catch (error) {
     console.error(error);
     return res.status(500).json({ error: "Error en el servidor" });
+  }
+};
+
+const obtener_anios = async (req, res) => {
+  const c = req.user.correo;
+  try {
+    const anios = await CitaService.getAniosDisponibles(c);
+    res.json(anios);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Error al obtener años" });
   }
 };
 
@@ -299,6 +311,7 @@ module.exports = {
   actualizarRol,
   borrarUsuario,
   obtenerRoles,
-  actualizarInfoUser
+  actualizarInfoUser,
+  obtener_anios
 };
 

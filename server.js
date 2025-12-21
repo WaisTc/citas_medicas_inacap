@@ -28,7 +28,9 @@ app.use((err, req, res, next) => {
 });
 
 const PORT = process.env.PORT || 3000;
-const HOST = '0.0.0.0'; // Requerido para despliegues en AWS para permitir tráfico externo
+const HOST = 'localhost';
+// Requerido para despliegues en AWS para permitir tráfico externo, 
+// cambiar a 0.0.0.0 para producción
 
 app.listen(PORT, HOST, async () => {
   console.log(`\n================================`);
@@ -39,9 +41,9 @@ app.listen(PORT, HOST, async () => {
   try {
     const pool = require('./config/db');
     await pool.query('SELECT 1');
-    console.log('Base de Datos: CONECTADA ✅');
+    console.log('Base de Datos: CONECTADA');
   } catch (err) {
-    console.error('Base de Datos: ERROR DE CONEXIÓN ❌');
+    console.error('Base de Datos: ERROR DE CONEXIÓN');
     console.error(err.message);
   }
 

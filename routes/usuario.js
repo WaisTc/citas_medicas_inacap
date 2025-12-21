@@ -5,8 +5,8 @@ const verifyToken = require('../middleware/authMiddleware');
 const { crearUsuario, loginUser, logoutUser, myself, obtenerMedicos, obtenerDatosPorCorreo,
     cita_t_solicitud, cita_t_empleado, aceptar_solicitud,
     cita_aceptadas_empleado, citasDel_usuario, cancelar_citaU,
-    pelao, obtenerUsuarios, actualizarRol, borrarUsuario, obtenerRoles, actualizarInfoUser
-
+    pelao, obtenerUsuarios, actualizarRol, borrarUsuario, obtenerRoles, actualizarInfoUser,
+    obtener_anios
 } = require('../controllers/usuarioController');
 
 
@@ -31,6 +31,7 @@ router.post('/actualizar_rol', verifyToken, actualizarRol);
 router.post('/eliminar_usuario', verifyToken, borrarUsuario);
 router.get('/roles', verifyToken, obtenerRoles);
 router.post('/actualizar_info', verifyToken, actualizarInfoUser);
+router.get('/anios', verifyToken, obtener_anios);
 
 
 
